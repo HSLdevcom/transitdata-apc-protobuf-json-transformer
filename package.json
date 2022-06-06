@@ -1,0 +1,59 @@
+{
+  "name": "transitdata-apc-protobuf-json-transformer",
+  "version": "0.0.1",
+  "description": "Transform APC messages from Protobuf back to JSON",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "rm -rf dist && tsc",
+    "check-and-build": "npm run ts:check && npm run prettier:check && npm run eslint && npm run test && npm run build",
+    "eslint": "eslint . --ext .ts --max-warnings=0",
+    "prettier": "prettier --write .",
+    "prettier:check": "prettier --check .",
+    "start": "node dist/index.js",
+    "test": "jest",
+    "ts:check": "tsc --noEmit"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/HSLdevcom/transitdata-apc-protobuf-json-transformer.git"
+  },
+  "keywords": [
+    "apc",
+    "pulsar"
+  ],
+  "author": "haphut <haphut@mistmap.com>",
+  "license": "EUPL-1.2",
+  "bugs": {
+    "url": "https://github.com/HSLdevcom/transitdata-apc-protobuf-json-transformer/issues"
+  },
+  "homepage": "https://github.com/HSLdevcom/transitdata-apc-protobuf-json-transformer#readme",
+  "devDependencies": {
+    "@tsconfig/strictest": "^1.0.1",
+    "@types/jest": "^28.1.1",
+    "@types/node": "^18.0.0",
+    "@typescript-eslint/eslint-plugin": "^5.9.0",
+    "@typescript-eslint/parser": "^5.9.0",
+    "eslint": "^8.6.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-config-airbnb-typescript": "^17.0.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-eslint-comments": "^3.2.0",
+    "eslint-plugin-import": "^2.25.4",
+    "eslint-plugin-jest": "^26.1.0",
+    "eslint-plugin-prettier": "^4.0.0",
+    "jest": "^28.1.1",
+    "prettier": "^2.5.1",
+    "ts-jest": "^28.0.4",
+    "typescript": "^4.5.5"
+  },
+  "dependencies": {
+    "pino": "^8.0.0"
+  },
+  "jest": {
+    "preset": "ts-jest/presets/js-with-ts",
+    "testEnvironment": "node",
+    "testPathIgnorePatterns": [
+      "./dist"
+    ]
+  }
+}
