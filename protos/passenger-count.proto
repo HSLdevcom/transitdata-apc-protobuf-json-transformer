@@ -1,0 +1,53 @@
+syntax = "proto2";
+
+package proto;
+
+option java_package = "fi.hsl.common.passengercount.proto";
+option java_outer_classname = "PassengerCount";
+
+message Data {
+    required int32 SchemaVersion = 1 [default = 1];
+    optional string topic = 2;
+    required Payload payload = 3;
+    optional int64 received_at = 4;
+}
+
+message Payload {
+    optional string desi = 1;
+    optional string dir = 2;
+    optional int32 oper = 3;
+    optional int32 veh = 4;
+    optional int64 tst = 5;
+    optional int64 tsi = 6;
+    optional double lat = 7;
+    optional double long = 8;
+    optional double odo = 9;
+    optional string oday = 10;
+    optional int32 jrn = 11;
+    optional int32 line = 12;
+    optional string start = 13;
+    optional string loc = 14;
+    optional int32 stop = 15;
+    optional string route = 16;
+    optional VehicleCounts vehicleCounts = 17;
+}
+
+message VehicleCounts {
+    optional string countQuality = 1;
+    optional int32 vehicleLoad = 2;
+    optional double vehicleLoadRatio = 3;
+    repeated DoorCount doorCounts = 4;
+    optional string extensions = 5;
+}
+
+message DoorCount {
+    optional string door = 1;
+    repeated Count count = 2;
+}
+
+message Count {
+    optional string clazz = 1; //Field 'class' in JSON, represents passenger class. clazz is used for variable name here, because 'class' is reserved keyword in Java
+    optional int32 in = 2;
+    optional int32 out = 3;
+}
+
