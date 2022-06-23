@@ -1,6 +1,6 @@
 syntax = "proto2";
 
-package proto;
+package passengerCount;
 
 option java_package = "fi.hsl.common.passengercount.proto";
 option java_outer_classname = "PassengerCount";
