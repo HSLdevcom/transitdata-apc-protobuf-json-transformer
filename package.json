@@ -4,8 +4,10 @@
   "description": "Transform APC messages from Protobuf back to JSON",
   "main": "dist/index.js",
   "scripts": {
-    "build": "rm -rf dist && tsc",
-    "check-and-build": "npm run ts:check && npm run prettier:check && npm run eslint && npm run test && npm run build",
+    "build": "npm run build:passenger-count && npm run build:src",
+    "build:passenger-count": "mkdir -p ./src/protobuf && rm -f ./src/protobuf/passengerCount.* && pbjs --target static-module --wrap es6 --out ./src/protobuf/passengerCount.js ./protos/passenger-count.proto && pbjs --target static-module --wrap es6 ./protos/passenger-count.proto | pbts --out ./src/protobuf/passengerCount.d.ts - && prettier --write ./src/protobuf/passengerCount.{js,d.ts}",
+    "build:src": "rm -rf dist && tsc",
+    "check-and-build": "npm run build:passenger-count && npm run ts:check && npm run prettier:check && npm run eslint && npm run test && npm run build",
     "eslint": "eslint . --ext .ts --max-warnings=0",
     "prettier": "prettier --write .",
     "prettier:check": "prettier --check .",
