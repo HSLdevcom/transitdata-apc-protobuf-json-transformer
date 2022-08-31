@@ -1,6 +1,10 @@
 /**
- * Generated manually with https://app.quicktype.io/ on 2022-06-22 using an
- * example JSON with dates modified to strings. Function m was also removed by hand as unused.
+ * Generated manually with https://app.quicktype.io/ on 2022-08-31 using several
+ * anonymized full APC JSON messages with strings modified to avoid enums and
+ * Dates and one extra JSON message with all HFP-inherited fields as null. The
+ * full APC JSON messages violated the given JSON spec but the data pipeline to
+ * handle those spec-violating messages exists so we are going to conform to the
+ * spec-violating form. Function m was also removed by hand as unused.
  */
 
 // To parse this data:
@@ -17,29 +21,29 @@ export interface ApcJSON {
 }
 
 export interface Apc {
-  desi?: string;
-  dir?: string;
-  oper?: number;
-  veh?: number;
-  tst?: string;
-  tsi?: number;
-  lat?: number;
-  long?: number;
-  odo?: number;
-  oday?: string;
-  jrn?: number;
-  line?: number;
-  start?: string;
-  loc?: string;
-  stop?: string;
-  route?: string;
+  desi?: null | string;
+  dir?: null | string;
+  oper?: null | string;
+  veh?: null | string;
+  tst?: null | string;
+  tsi?: number | null;
+  lat?: null | string;
+  long?: null | string;
+  odo?: null | string;
+  oday?: null | string;
+  jrn?: null | string;
+  line?: null | string;
+  start?: null | string;
+  loc?: null | string;
+  stop?: null | string;
+  route?: null | string;
   vehiclecounts?: Vehiclecounts;
 }
 
 export interface Vehiclecounts {
   countquality?: string;
   vehicleload?: number;
-  vehicleloadratio?: number;
+  vehicleloadratio?: string;
   doorcounts?: Doorcount[];
 }
 
@@ -213,22 +217,22 @@ const typeMap: any = {
   ApcJSON: o([{ json: "APC", js: "APC", typ: u(undefined, r("Apc")) }], false),
   Apc: o(
     [
-      { json: "desi", js: "desi", typ: u(undefined, "") },
-      { json: "dir", js: "dir", typ: u(undefined, "") },
-      { json: "oper", js: "oper", typ: u(undefined, 0) },
-      { json: "veh", js: "veh", typ: u(undefined, 0) },
-      { json: "tst", js: "tst", typ: u(undefined, "") },
-      { json: "tsi", js: "tsi", typ: u(undefined, 0) },
-      { json: "lat", js: "lat", typ: u(undefined, 3.14) },
-      { json: "long", js: "long", typ: u(undefined, 3.14) },
-      { json: "odo", js: "odo", typ: u(undefined, 3.14) },
-      { json: "oday", js: "oday", typ: u(undefined, "") },
-      { json: "jrn", js: "jrn", typ: u(undefined, 0) },
-      { json: "line", js: "line", typ: u(undefined, 0) },
-      { json: "start", js: "start", typ: u(undefined, "") },
-      { json: "loc", js: "loc", typ: u(undefined, "") },
-      { json: "stop", js: "stop", typ: u(undefined, "") },
-      { json: "route", js: "route", typ: u(undefined, "") },
+      { json: "desi", js: "desi", typ: u(undefined, u(null, "")) },
+      { json: "dir", js: "dir", typ: u(undefined, u(null, "")) },
+      { json: "oper", js: "oper", typ: u(undefined, u(null, "")) },
+      { json: "veh", js: "veh", typ: u(undefined, u(null, "")) },
+      { json: "tst", js: "tst", typ: u(undefined, u(null, "")) },
+      { json: "tsi", js: "tsi", typ: u(undefined, u(0, null)) },
+      { json: "lat", js: "lat", typ: u(undefined, u(null, "")) },
+      { json: "long", js: "long", typ: u(undefined, u(null, "")) },
+      { json: "odo", js: "odo", typ: u(undefined, u(null, "")) },
+      { json: "oday", js: "oday", typ: u(undefined, u(null, "")) },
+      { json: "jrn", js: "jrn", typ: u(undefined, u(null, "")) },
+      { json: "line", js: "line", typ: u(undefined, u(null, "")) },
+      { json: "start", js: "start", typ: u(undefined, u(null, "")) },
+      { json: "loc", js: "loc", typ: u(undefined, u(null, "")) },
+      { json: "stop", js: "stop", typ: u(undefined, u(null, "")) },
+      { json: "route", js: "route", typ: u(undefined, u(null, "")) },
       {
         json: "vehiclecounts",
         js: "vehiclecounts",
@@ -244,7 +248,7 @@ const typeMap: any = {
       {
         json: "vehicleloadratio",
         js: "vehicleloadratio",
-        typ: u(undefined, 3.14),
+        typ: u(undefined, ""),
       },
       {
         json: "doorcounts",
