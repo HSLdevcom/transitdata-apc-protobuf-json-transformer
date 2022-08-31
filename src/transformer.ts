@@ -1,6 +1,6 @@
-import type Pulsar from "pulsar-client";
 import type pino from "pino";
-import type * as ApcJson from "./apcJson";
+import type Pulsar from "pulsar-client";
+import type * as apcJson from "./apcJson";
 import { passengerCount } from "./protobuf/passengerCount";
 
 export const getUniqueVehicleIdFromMqttTopic = (
@@ -14,15 +14,28 @@ export const getUniqueVehicleIdFromMqttTopic = (
 };
 
 /**
- * If value is nullish, return an empty object. If value is not nullish, wrap it
- * in an object with given key.
+ * If value is undefined, return an empty object. If value is defined, wrap it
+ * in an object with the given key.
  *
- * The result can be used with spread syntax to add value into another object
- * iff value is not nullish.
+ * The result can be used with spread syntax to add an entry into another object
+ * iff value is defined.
  */
-function wrapNotNullish<T>(key: string, value: T): { [k: string]: T } {
-  return value == null ? {} : { [key]: value };
+export function wrapDefined<T>(key: string, value: T): { [k: string]: T } {
+  return value === undefined ? {} : { [key]: value };
 }
+
+/**
+ * Transform all values of the object into strings.
+ */
+export const stringifyNumbers = (input: {
+  [key: string]: number | null | undefined;
+}): { [key: string]: string | null } =>
+  Object.fromEntries(
+    Object.entries(input).map(([key, value]) => [
+      key,
+      value == null ? null : value.toString(),
+    ])
+  );
 
 const longishToNumber = (
   x: number | Long | null | undefined
@@ -40,44 +53,73 @@ const transformTstToIsoString = (
   tst: number | Long.Long | null | undefined
 ): string | undefined => {
   let result;
-  const num = longishToNumber(tst);
-  if (num != null) {
-    result = new Date(num).toISOString();
+  const seconds = longishToNumber(tst);
+  if (seconds != null) {
+    result = new Date(1000 * seconds).toISOString();
   }
   return result;
 };
 
 const transformVehicleCounts = (
   vehiclecounts: passengerCount.IVehicleCounts | null | undefined
-): ApcJson.Vehiclecounts | undefined => {
-  let result: ApcJson.Vehiclecounts | undefined;
+): apcJson.Vehiclecounts | undefined => {
+  let result: apcJson.Vehiclecounts | undefined;
   if (vehiclecounts != null) {
-    let doorcounts: ApcJson.Doorcount[] | undefined;
+    let doorcounts: apcJson.Doorcount[] | undefined;
     if (vehiclecounts.doorCounts != null) {
       doorcounts = vehiclecounts.doorCounts.map((dc) => {
-        let count: ApcJson.Count[] | undefined;
+        let count: apcJson.Count[] | undefined;
         if (dc.count != null) {
           count = dc.count.map((c) => ({
-            ...wrapNotNullish("class", c.clazz),
-            ...wrapNotNullish("in", c.in),
-            ...wrapNotNullish("out", c.out),
+            ...wrapDefined("class", c.clazz),
+            ...wrapDefined("in", c.in),
+            ...wrapDefined("out", c.out),
           }));
         }
         return {
-          ...wrapNotNullish("door", dc.door),
-          ...wrapNotNullish("count", count),
+          ...wrapDefined("door", dc.door),
+          ...wrapDefined("count", count),
         };
       });
     }
     result = {
-      ...wrapNotNullish("countquality", vehiclecounts.countQuality),
-      ...wrapNotNullish("vehicleload", vehiclecounts.vehicleLoad),
-      ...wrapNotNullish("vehicleloadratio", vehiclecounts.vehicleLoadRatio),
-      ...wrapNotNullish("doorcounts", doorcounts),
+      ...wrapDefined("countquality", vehiclecounts.countQuality),
+      ...wrapDefined("vehicleload", vehiclecounts.vehicleLoad),
+      ...stringifyNumbers(
+        wrapDefined("vehicleloadratio", vehiclecounts.vehicleLoadRatio)
+      ),
+      ...wrapDefined("doorcounts", doorcounts),
     };
   }
   return result;
 };
+
+const transformPayload = (
+  apcProtobufPayload: passengerCount.IPayload
+): apcJson.ApcJSON => ({
+  APC: {
+    ...wrapDefined("desi", apcProtobufPayload.desi),
+    ...wrapDefined("dir", apcProtobufPayload.dir),
+    ...stringifyNumbers(wrapDefined("oper", apcProtobufPayload.oper)),
+    ...stringifyNumbers(wrapDefined("veh", apcProtobufPayload.veh)),
+    ...wrapDefined("tst", transformTstToIsoString(apcProtobufPayload.tst)),
+    ...wrapDefined("tsi", longishToNumber(apcProtobufPayload.tsi)),
+    ...stringifyNumbers(wrapDefined("lat", apcProtobufPayload.lat)),
+    ...stringifyNumbers(wrapDefined("long", apcProtobufPayload.long)),
+    ...stringifyNumbers(wrapDefined("odo", apcProtobufPayload.odo)),
+    ...wrapDefined("oday", apcProtobufPayload.oday),
+    ...stringifyNumbers(wrapDefined("jrn", apcProtobufPayload.jrn)),
+    ...stringifyNumbers(wrapDefined("line", apcProtobufPayload.line)),
+    ...wrapDefined("start", apcProtobufPayload.start),
+    ...wrapDefined("loc", apcProtobufPayload.loc),
+    ...stringifyNumbers(wrapDefined("stop", apcProtobufPayload.stop)),
+    ...wrapDefined("route", apcProtobufPayload.route),
+    ...wrapDefined(
+      "vehiclecounts",
+      transformVehicleCounts(apcProtobufPayload.vehicleCounts)
+    ),
+  },
+});
 
 export const initializeTransformer = (
   logger: pino.Logger
@@ -100,33 +142,7 @@ export const initializeTransformer = (
           "APC data has an unexpected topic format"
         );
       } else {
-        const mqttPayload: ApcJson.ApcJSON = {
-          APC: {
-            ...wrapNotNullish("desi", apcData.payload.desi),
-            ...wrapNotNullish("dir", apcData.payload.dir),
-            ...wrapNotNullish("oper", apcData.payload.oper),
-            ...wrapNotNullish("veh", apcData.payload.veh),
-            ...wrapNotNullish(
-              "tst",
-              transformTstToIsoString(apcData.payload.tst)
-            ),
-            ...wrapNotNullish("tsi", longishToNumber(apcData.payload.tsi)),
-            ...wrapNotNullish("lat", apcData.payload.lat),
-            ...wrapNotNullish("long", apcData.payload.long),
-            ...wrapNotNullish("odo", apcData.payload.odo),
-            ...wrapNotNullish("oday", apcData.payload.oday),
-            ...wrapNotNullish("jrn", apcData.payload.jrn),
-            ...wrapNotNullish("line", apcData.payload.line),
-            ...wrapNotNullish("start", apcData.payload.start),
-            ...wrapNotNullish("loc", apcData.payload.loc),
-            ...wrapNotNullish("stop", apcData.payload.stop),
-            ...wrapNotNullish("route", apcData.payload.route),
-            ...wrapNotNullish(
-              "vehiclecounts",
-              transformVehicleCounts(apcData.payload.vehicleCounts)
-            ),
-          },
-        };
+        const mqttPayload: apcJson.ApcJSON = transformPayload(apcData.payload);
         const encoded = Buffer.from(JSON.stringify(mqttPayload), "utf8");
         result = {
           data: encoded,
