@@ -1,6 +1,6 @@
 import type pino from "pino";
 import type Pulsar from "pulsar-client";
-import initializeTransformer from "./transformer";
+import { initializeTransformer } from "./transformer";
 
 const keepProcessingMessages = async (
   logger: pino.Logger,

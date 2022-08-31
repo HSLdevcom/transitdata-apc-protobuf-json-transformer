@@ -79,7 +79,7 @@ const transformVehicleCounts = (
   return result;
 };
 
-const initializeTransformer = (
+export const initializeTransformer = (
   logger: pino.Logger
 ): ((msg: Pulsar.Message) => Pulsar.ProducerMessage | undefined) => {
   const transform = (
@@ -141,5 +141,3 @@ const initializeTransformer = (
   };
   return transform;
 };
-
-export default initializeTransformer;
