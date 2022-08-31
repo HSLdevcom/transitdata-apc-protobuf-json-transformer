@@ -87,7 +87,7 @@ export const initializeTransformer = (
   ): Pulsar.ProducerMessage | undefined => {
     let result: Pulsar.ProducerMessage | undefined;
     const apcData = passengerCount.Data.decode(protobufMessage.getData());
-    if (apcData.topic !== undefined) {
+    if (apcData.topic == null) {
       logger.warn(
         { apcData },
         "APC data is missing topic and thus the owning operator and its vehicle number"
