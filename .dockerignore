@@ -4,6 +4,7 @@
 # Allow these.
 !/LICENSE
 !/protos
+!/quicktype
 !/src
 !/package.json
 !/package-lock.json

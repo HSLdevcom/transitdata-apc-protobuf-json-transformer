@@ -1,2 +1,3 @@
 src/apcJson.ts
-src/protobuf/passengerCount.d.ts
+src/protobuf
+src/quicktype

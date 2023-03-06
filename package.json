@@ -4,10 +4,11 @@
   "description": "Transform APC messages from Protobuf back to JSON",
   "main": "dist/index.js",
   "scripts": {
-    "build": "npm run build:passenger-count && npm run build:src",
+    "build": "npm run build:passenger-count && npm run build:full-apc && npm run build:src",
     "build:passenger-count": "mkdir -p ./src/protobuf && rm -f ./src/protobuf/passengerCount.* && pbjs --target static-module --wrap es6 --out ./src/protobuf/passengerCount.js ./protos/passenger-count.proto && pbjs --target static-module --wrap es6 ./protos/passenger-count.proto | pbts --out ./src/protobuf/passengerCount.d.ts - && prettier --write ./src/protobuf/passengerCount.{js,d.ts}",
+    "build:full-apc": "mkdir -p ./src/quicktype && rm -f ./src/quicktype/fullApc.ts && quicktype --out ./src/quicktype/fullApc.ts --top-level FullApcMessage --lang ts --src-lang json --src ./quicktype/full-apc --no-date-times --alphabetize-properties --all-properties-optional --telemetry disable --converters all-objects && prettier --write ./src/quicktype/fullApc.ts && export TMPFILE=\"$(mktemp)\" && echo '// @ts-nocheck' > \"${TMPFILE}\" && cat ./src/quicktype/fullApc.ts >> \"${TMPFILE}\" && mv \"${TMPFILE}\" ./src/quicktype/fullApc.ts",
     "build:src": "rm -rf dist && tsc",
-    "check-and-build": "npm run build:passenger-count && npm run ts:check && npm run prettier:check && npm run eslint && npm run test && npm run build",
+    "check-and-build": "npm run build:passenger-count && npm run build:full-apc && npm run ts:check && npm run prettier:check && npm run eslint && npm run test && npm run build",
     "eslint": "eslint . --ext .ts --max-warnings=0",
     "prettier": "prettier --write .",
     "prettier:check": "prettier --check .",

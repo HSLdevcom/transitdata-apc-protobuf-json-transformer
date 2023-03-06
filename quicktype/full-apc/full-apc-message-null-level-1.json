@@ -1,0 +1,21 @@
+{
+  "APC": {
+    "desi": null,
+    "dir": null,
+    "oper": null,
+    "veh": null,
+    "tst": null,
+    "tsi": null,
+    "lat": null,
+    "long": null,
+    "odo": null,
+    "oday": null,
+    "jrn": null,
+    "line": null,
+    "start": null,
+    "loc": null,
+    "stop": null,
+    "route": null,
+    "vehiclecounts": null
+  }
+}

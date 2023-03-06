@@ -1,0 +1,26 @@
+{
+  "APC": {
+    "desi": "587",
+    "dir": "2",
+    "oper": 12,
+    "veh": 1123,
+    "tst": "2023-03-04T18:10:01.000Z",
+    "tsi": 1677953401,
+    "lat": 60.27794,
+    "long": 25.105738,
+    "odo": 17477,
+    "oday": "2023-03-04",
+    "jrn": 444,
+    "line": 783,
+    "start": "19:34",
+    "loc": "GPS",
+    "stop": 4940214,
+    "route": "4587",
+    "vehiclecounts": {
+      "countquality": null,
+      "vehicleload": null,
+      "vehicleloadratio": null,
+      "doorcounts": null
+    }
+  }
+}
