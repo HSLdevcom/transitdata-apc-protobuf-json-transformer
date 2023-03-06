@@ -5,7 +5,6 @@ import { passengerCount } from "./protobuf/passengerCount";
 import {
   getUniqueVehicleIdFromMqttTopic,
   initializeTransformer,
-  stringifyNumbers,
   wrapDefined,
 } from "./transformer";
 
@@ -27,13 +26,6 @@ test("wrapDefined", () => {
   expect(wrapDefined("foo", null)).toStrictEqual({ foo: null });
   expect(wrapDefined("foo", 1)).toStrictEqual({ foo: 1 });
   expect(wrapDefined("foo", { bar: 1 })).toStrictEqual({ foo: { bar: 1 } });
-});
-
-test("stringifyNumbers with one entry", () => {
-  expect(stringifyNumbers({ foo: undefined })).toStrictEqual({ foo: null });
-  expect(stringifyNumbers({ foo: null })).toStrictEqual({ foo: null });
-  expect(stringifyNumbers({ foo: 1 })).toStrictEqual({ foo: "1" });
-  expect(stringifyNumbers({ foo: 1.1 })).toStrictEqual({ foo: "1.1" });
 });
 
 const mockApcProtobufMessage = ({

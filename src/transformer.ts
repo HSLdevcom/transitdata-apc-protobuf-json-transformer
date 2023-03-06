@@ -1,6 +1,6 @@
 import type pino from "pino";
 import type Pulsar from "pulsar-client";
-import type * as apcJson from "./apcJson";
+import type * as fullApc from "./quicktype/fullApc";
 import { passengerCount } from "./protobuf/passengerCount";
 
 export const getUniqueVehicleIdFromMqttTopic = (
@@ -23,19 +23,6 @@ export const getUniqueVehicleIdFromMqttTopic = (
 export function wrapDefined<T>(key: string, value: T): { [k: string]: T } {
   return value === undefined ? {} : { [key]: value };
 }
-
-/**
- * Transform all values of the object into strings.
- */
-export const stringifyNumbers = (input: {
-  [key: string]: number | null | undefined;
-}): { [key: string]: string | null } =>
-  Object.fromEntries(
-    Object.entries(input).map(([key, value]) => [
-      key,
-      value == null ? null : value.toString(),
-    ])
-  );
 
 const longishToNumber = (
   x: number | Long | null | undefined
@@ -62,13 +49,13 @@ const transformTstToIsoString = (
 
 const transformVehicleCounts = (
   vehiclecounts: passengerCount.IVehicleCounts | null | undefined
-): apcJson.Vehiclecounts | undefined => {
-  let result: apcJson.Vehiclecounts | undefined;
+): fullApc.Vehiclecounts | undefined => {
+  let result: fullApc.Vehiclecounts | undefined;
   if (vehiclecounts != null) {
-    let doorcounts: apcJson.Doorcount[] | undefined;
+    let doorcounts: fullApc.Doorcount[] | undefined;
     if (vehiclecounts.doorCounts != null) {
       doorcounts = vehiclecounts.doorCounts.map((dc) => {
-        let count: apcJson.Count[] | undefined;
+        let count: fullApc.Count[] | undefined;
         if (dc.count != null) {
           count = dc.count.map((c) => ({
             ...wrapDefined("class", c.clazz),
@@ -85,9 +72,7 @@ const transformVehicleCounts = (
     result = {
       ...wrapDefined("countquality", vehiclecounts.countQuality),
       ...wrapDefined("vehicleload", vehiclecounts.vehicleLoad),
-      ...stringifyNumbers(
-        wrapDefined("vehicleloadratio", vehiclecounts.vehicleLoadRatio)
-      ),
+      ...wrapDefined("vehicleloadratio", vehiclecounts.vehicleLoadRatio),
       ...wrapDefined("doorcounts", doorcounts),
     };
   }
@@ -96,23 +81,23 @@ const transformVehicleCounts = (
 
 const transformPayload = (
   apcProtobufPayload: passengerCount.IPayload
-): apcJson.ApcJSON => ({
+): fullApc.FullApcMessage => ({
   APC: {
     ...wrapDefined("desi", apcProtobufPayload.desi),
     ...wrapDefined("dir", apcProtobufPayload.dir),
-    ...stringifyNumbers(wrapDefined("oper", apcProtobufPayload.oper)),
-    ...stringifyNumbers(wrapDefined("veh", apcProtobufPayload.veh)),
+    ...wrapDefined("oper", apcProtobufPayload.oper),
+    ...wrapDefined("veh", apcProtobufPayload.veh),
     ...wrapDefined("tst", transformTstToIsoString(apcProtobufPayload.tst)),
     ...wrapDefined("tsi", longishToNumber(apcProtobufPayload.tsi)),
-    ...stringifyNumbers(wrapDefined("lat", apcProtobufPayload.lat)),
-    ...stringifyNumbers(wrapDefined("long", apcProtobufPayload.long)),
-    ...stringifyNumbers(wrapDefined("odo", apcProtobufPayload.odo)),
+    ...wrapDefined("lat", apcProtobufPayload.lat),
+    ...wrapDefined("long", apcProtobufPayload.long),
+    ...wrapDefined("odo", apcProtobufPayload.odo),
     ...wrapDefined("oday", apcProtobufPayload.oday),
-    ...stringifyNumbers(wrapDefined("jrn", apcProtobufPayload.jrn)),
-    ...stringifyNumbers(wrapDefined("line", apcProtobufPayload.line)),
+    ...wrapDefined("jrn", apcProtobufPayload.jrn),
+    ...wrapDefined("line", apcProtobufPayload.line),
     ...wrapDefined("start", apcProtobufPayload.start),
     ...wrapDefined("loc", apcProtobufPayload.loc),
-    ...stringifyNumbers(wrapDefined("stop", apcProtobufPayload.stop)),
+    ...wrapDefined("stop", apcProtobufPayload.stop),
     ...wrapDefined("route", apcProtobufPayload.route),
     ...wrapDefined(
       "vehiclecounts",
@@ -142,7 +127,9 @@ export const initializeTransformer = (
           "APC data has an unexpected topic format"
         );
       } else {
-        const mqttPayload: apcJson.ApcJSON = transformPayload(apcData.payload);
+        const mqttPayload: fullApc.FullApcMessage = transformPayload(
+          apcData.payload
+        );
         const encoded = Buffer.from(JSON.stringify(mqttPayload), "utf8");
         result = {
           data: encoded,
