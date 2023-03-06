@@ -1,6 +1,6 @@
 import pino from "pino";
 import Pulsar from "pulsar-client";
-import * as apcJson from "./apcJson";
+import * as fullApc from "./quicktype/fullApc";
 import { passengerCount } from "./protobuf/passengerCount";
 import {
   getUniqueVehicleIdFromMqttTopic,
@@ -75,7 +75,7 @@ const mockApcJsonMessage = ({
   eventTimestamp,
   properties,
 }: {
-  mqttPayload: apcJson.ApcJSON;
+  mqttPayload: fullApc.FullApcMessage;
   eventTimestamp: number;
   properties: { [key: string]: string };
 }): Pulsar.ProducerMessage => {
@@ -128,24 +128,24 @@ describe("Transformer", () => {
         APC: {
           desi: "994K",
           dir: "2",
-          oper: "6",
-          veh: "817",
+          oper: 6,
+          veh: 817,
           tst: "2022-08-30T13:20:44.000Z",
           tsi: 1661865644,
-          lat: "60.280113",
-          long: "25.293034",
-          odo: "2147483647",
+          lat: 60.280113,
+          long: 25.293034,
+          odo: 2147483647,
           oday: "2022-08-30",
-          jrn: "28",
-          line: "747",
+          jrn: 28,
+          line: 747,
           start: "16:15",
           loc: "GPS",
-          stop: "9210204",
+          stop: 9210204,
           route: "9994K",
           vehiclecounts: {
             countquality: "regular",
             vehicleload: 6,
-            vehicleloadratio: "0.1",
+            vehicleloadratio: 0.1,
             doorcounts: [
               { door: "0", count: [{ class: "adult", in: 1, out: 0 }] },
               { door: "1", count: [{ class: "adult", in: 0, out: 1 }] },
@@ -163,9 +163,11 @@ describe("Transformer", () => {
     expect(resultMessage).toBeDefined();
     let result;
     if (resultMessage != null) {
-      result = apcJson.Convert.toApcJSON(resultMessage.data.toString("utf-8"));
+      result = fullApc.Convert.toFullApcMessage(
+        resultMessage.data.toString("utf-8")
+      );
     }
-    const expected = apcJson.Convert.toApcJSON(
+    const expected = fullApc.Convert.toFullApcMessage(
       jsonMessage.data.toString("utf-8")
     );
     expect(result).toStrictEqual(expected);
