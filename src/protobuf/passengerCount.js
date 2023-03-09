@@ -145,21 +145,25 @@ export const passengerCount = ($root.passengerCount = (() => {
       while (reader.pos < end) {
         let tag = reader.uint32();
         switch (tag >>> 3) {
-          case 1:
+          case 1: {
             message.SchemaVersion = reader.int32();
             break;
-          case 2:
+          }
+          case 2: {
             message.topic = reader.string();
             break;
-          case 3:
+          }
+          case 3: {
             message.payload = $root.passengerCount.Payload.decode(
               reader,
               reader.uint32()
             );
             break;
-          case 4:
+          }
+          case 4: {
             message.receivedAt = reader.int64();
             break;
+          }
           default:
             reader.skipType(tag & 7);
             break;
@@ -327,6 +331,21 @@ export const passengerCount = ($root.passengerCount = (() => {
      */
     Data.prototype.toJSON = function toJSON() {
       return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+    };
+
+    /**
+     * Gets the default type url for Data
+     * @function getTypeUrl
+     * @memberof passengerCount.Data
+     * @static
+     * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+     * @returns {string} The default type url
+     */
+    Data.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+      if (typeUrlPrefix === undefined) {
+        typeUrlPrefix = "type.googleapis.com";
+      }
+      return typeUrlPrefix + "/passengerCount.Data";
     };
 
     return Data;
@@ -603,60 +622,77 @@ export const passengerCount = ($root.passengerCount = (() => {
       while (reader.pos < end) {
         let tag = reader.uint32();
         switch (tag >>> 3) {
-          case 1:
+          case 1: {
             message.desi = reader.string();
             break;
-          case 2:
+          }
+          case 2: {
             message.dir = reader.string();
             break;
-          case 3:
+          }
+          case 3: {
             message.oper = reader.int32();
             break;
-          case 4:
+          }
+          case 4: {
             message.veh = reader.int32();
             break;
-          case 5:
+          }
+          case 5: {
             message.tst = reader.int64();
             break;
-          case 6:
+          }
+          case 6: {
             message.tsi = reader.int64();
             break;
-          case 7:
+          }
+          case 7: {
             message.lat = reader.double();
             break;
-          case 8:
+          }
+          case 8: {
             message.long = reader.double();
             break;
-          case 9:
+          }
+          case 9: {
             message.odo = reader.double();
             break;
-          case 10:
+          }
+          case 10: {
             message.oday = reader.string();
             break;
-          case 11:
+          }
+          case 11: {
             message.jrn = reader.int32();
             break;
-          case 12:
+          }
+          case 12: {
             message.line = reader.int32();
             break;
-          case 13:
+          }
+          case 13: {
             message.start = reader.string();
             break;
-          case 14:
+          }
+          case 14: {
             message.loc = reader.string();
             break;
-          case 15:
+          }
+          case 15: {
             message.stop = reader.int32();
             break;
-          case 16:
+          }
+          case 16: {
             message.route = reader.string();
             break;
-          case 17:
+          }
+          case 17: {
             message.vehicleCounts = $root.passengerCount.VehicleCounts.decode(
               reader,
               reader.uint32()
             );
             break;
+          }
           default:
             reader.skipType(tag & 7);
             break;
@@ -944,6 +980,21 @@ export const passengerCount = ($root.passengerCount = (() => {
       return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
     };
 
+    /**
+     * Gets the default type url for Payload
+     * @function getTypeUrl
+     * @memberof passengerCount.Payload
+     * @static
+     * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+     * @returns {string} The default type url
+     */
+    Payload.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+      if (typeUrlPrefix === undefined) {
+        typeUrlPrefix = "type.googleapis.com";
+      }
+      return typeUrlPrefix + "/passengerCount.Payload";
+    };
+
     return Payload;
   })();
 
@@ -1099,25 +1150,30 @@ export const passengerCount = ($root.passengerCount = (() => {
       while (reader.pos < end) {
         let tag = reader.uint32();
         switch (tag >>> 3) {
-          case 1:
+          case 1: {
             message.countQuality = reader.string();
             break;
-          case 2:
+          }
+          case 2: {
             message.vehicleLoad = reader.int32();
             break;
-          case 3:
+          }
+          case 3: {
             message.vehicleLoadRatio = reader.double();
             break;
-          case 4:
+          }
+          case 4: {
             if (!(message.doorCounts && message.doorCounts.length))
               message.doorCounts = [];
             message.doorCounts.push(
               $root.passengerCount.DoorCount.decode(reader, reader.uint32())
             );
             break;
-          case 5:
+          }
+          case 5: {
             message.extensions = reader.string();
             break;
+          }
           default:
             reader.skipType(tag & 7);
             break;
@@ -1279,6 +1335,21 @@ export const passengerCount = ($root.passengerCount = (() => {
       return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
     };
 
+    /**
+     * Gets the default type url for VehicleCounts
+     * @function getTypeUrl
+     * @memberof passengerCount.VehicleCounts
+     * @static
+     * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+     * @returns {string} The default type url
+     */
+    VehicleCounts.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+      if (typeUrlPrefix === undefined) {
+        typeUrlPrefix = "type.googleapis.com";
+      }
+      return typeUrlPrefix + "/passengerCount.VehicleCounts";
+    };
+
     return VehicleCounts;
   })();
 
@@ -1387,15 +1458,17 @@ export const passengerCount = ($root.passengerCount = (() => {
       while (reader.pos < end) {
         let tag = reader.uint32();
         switch (tag >>> 3) {
-          case 1:
+          case 1: {
             message.door = reader.string();
             break;
-          case 2:
+          }
+          case 2: {
             if (!(message.count && message.count.length)) message.count = [];
             message.count.push(
               $root.passengerCount.Count.decode(reader, reader.uint32())
             );
             break;
+          }
           default:
             reader.skipType(tag & 7);
             break;
@@ -1505,6 +1578,21 @@ export const passengerCount = ($root.passengerCount = (() => {
      */
     DoorCount.prototype.toJSON = function toJSON() {
       return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+    };
+
+    /**
+     * Gets the default type url for DoorCount
+     * @function getTypeUrl
+     * @memberof passengerCount.DoorCount
+     * @static
+     * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+     * @returns {string} The default type url
+     */
+    DoorCount.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+      if (typeUrlPrefix === undefined) {
+        typeUrlPrefix = "type.googleapis.com";
+      }
+      return typeUrlPrefix + "/passengerCount.DoorCount";
     };
 
     return DoorCount;
@@ -1621,15 +1709,18 @@ export const passengerCount = ($root.passengerCount = (() => {
       while (reader.pos < end) {
         let tag = reader.uint32();
         switch (tag >>> 3) {
-          case 1:
+          case 1: {
             message.clazz = reader.string();
             break;
-          case 2:
+          }
+          case 2: {
             message["in"] = reader.int32();
             break;
-          case 3:
+          }
+          case 3: {
             message.out = reader.int32();
             break;
+          }
           default:
             reader.skipType(tag & 7);
             break;
@@ -1725,6 +1816,21 @@ export const passengerCount = ($root.passengerCount = (() => {
      */
     Count.prototype.toJSON = function toJSON() {
       return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+    };
+
+    /**
+     * Gets the default type url for Count
+     * @function getTypeUrl
+     * @memberof passengerCount.Count
+     * @static
+     * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+     * @returns {string} The default type url
+     */
+    Count.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+      if (typeUrlPrefix === undefined) {
+        typeUrlPrefix = "type.googleapis.com";
+      }
+      return typeUrlPrefix + "/passengerCount.Count";
     };
 
     return Count;

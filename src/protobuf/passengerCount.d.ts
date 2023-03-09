@@ -1,4 +1,5 @@
 import * as $protobuf from "protobufjs";
+import Long = require("long");
 /** Namespace passengerCount. */
 export namespace passengerCount {
   /** Properties of a Data. */
@@ -121,6 +122,13 @@ export namespace passengerCount {
      * @returns JSON object
      */
     public toJSON(): { [k: string]: any };
+
+    /**
+     * Gets the default type url for Data
+     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+     * @returns The default type url
+     */
+    public static getTypeUrl(typeUrlPrefix?: string): string;
   }
 
   /** Properties of a Payload. */
@@ -323,6 +331,13 @@ export namespace passengerCount {
      * @returns JSON object
      */
     public toJSON(): { [k: string]: any };
+
+    /**
+     * Gets the default type url for Payload
+     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+     * @returns The default type url
+     */
+    public static getTypeUrl(typeUrlPrefix?: string): string;
   }
 
   /** Properties of a VehicleCounts. */
@@ -453,6 +468,13 @@ export namespace passengerCount {
      * @returns JSON object
      */
     public toJSON(): { [k: string]: any };
+
+    /**
+     * Gets the default type url for VehicleCounts
+     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+     * @returns The default type url
+     */
+    public static getTypeUrl(typeUrlPrefix?: string): string;
   }
 
   /** Properties of a DoorCount. */
@@ -565,6 +587,13 @@ export namespace passengerCount {
      * @returns JSON object
      */
     public toJSON(): { [k: string]: any };
+
+    /**
+     * Gets the default type url for DoorCount
+     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+     * @returns The default type url
+     */
+    public static getTypeUrl(typeUrlPrefix?: string): string;
   }
 
   /** Properties of a Count. */
@@ -683,5 +712,12 @@ export namespace passengerCount {
      * @returns JSON object
      */
     public toJSON(): { [k: string]: any };
+
+    /**
+     * Gets the default type url for Count
+     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+     * @returns The default type url
+     */
+    public static getTypeUrl(typeUrlPrefix?: string): string;
   }
 }
