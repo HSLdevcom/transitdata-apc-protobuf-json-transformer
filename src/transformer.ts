@@ -1,3 +1,4 @@
+import type Long from "long";
 import type pino from "pino";
 import type Pulsar from "pulsar-client";
 import type * as expandedApc from "./quicktype/expandedApc";
@@ -37,7 +38,7 @@ const longishToNumber = (
 };
 
 const transformTstToIsoString = (
-  tst: number | Long.Long | null | undefined
+  tst: number | Long | null | undefined
 ): string | undefined => {
   let result;
   const seconds = longishToNumber(tst);
