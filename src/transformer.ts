@@ -1,6 +1,6 @@
 import type pino from "pino";
 import type Pulsar from "pulsar-client";
-import type * as fullApc from "./quicktype/fullApc";
+import type * as expandedApc from "./quicktype/expandedApc";
 import { passengerCount } from "./protobuf/passengerCount";
 
 export const getUniqueVehicleIdFromMqttTopic = (
@@ -49,13 +49,13 @@ const transformTstToIsoString = (
 
 const transformVehicleCounts = (
   vehiclecounts: passengerCount.IVehicleCounts | null | undefined
-): fullApc.Vehiclecounts | undefined => {
-  let result: fullApc.Vehiclecounts | undefined;
+): expandedApc.Vehiclecounts | undefined => {
+  let result: expandedApc.Vehiclecounts | undefined;
   if (vehiclecounts != null) {
-    let doorcounts: fullApc.Doorcount[] | undefined;
+    let doorcounts: expandedApc.Doorcount[] | undefined;
     if (vehiclecounts.doorCounts != null) {
       doorcounts = vehiclecounts.doorCounts.map((dc) => {
-        let count: fullApc.Count[] | undefined;
+        let count: expandedApc.Count[] | undefined;
         if (dc.count != null) {
           count = dc.count.map((c) => ({
             ...wrapDefined("class", c.clazz),
@@ -81,7 +81,7 @@ const transformVehicleCounts = (
 
 const transformPayload = (
   apcProtobufPayload: passengerCount.IPayload
-): fullApc.FullApcMessage => ({
+): expandedApc.ExpandedApcMessage => ({
   APC: {
     ...wrapDefined("desi", apcProtobufPayload.desi),
     ...wrapDefined("dir", apcProtobufPayload.dir),
@@ -127,7 +127,7 @@ export const initializeTransformer = (
           "APC data has an unexpected topic format"
         );
       } else {
-        const mqttPayload: fullApc.FullApcMessage = transformPayload(
+        const mqttPayload: expandedApc.ExpandedApcMessage = transformPayload(
           apcData.payload
         );
         const encoded = Buffer.from(JSON.stringify(mqttPayload), "utf8");

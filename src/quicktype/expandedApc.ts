@@ -1,18 +1,18 @@
 // @ts-nocheck
 // To parse this data:
 //
-//   import { Convert, FullApcMessageNullLevel1, FullApcMessageNullLevel2, FullApcMessageNullLevel3, FullApcMessageNullLevel4, FullApcMessage } from "./file";
+//   import { Convert, ExpandedApcMessageNullLevel1, ExpandedApcMessageNullLevel2, ExpandedApcMessageNullLevel3, ExpandedApcMessageNullLevel4, ExpandedApcMessage } from "./file";
 //
-//   const fullApcMessageNullLevel1 = Convert.toFullApcMessageNullLevel1(json);
-//   const fullApcMessageNullLevel2 = Convert.toFullApcMessageNullLevel2(json);
-//   const fullApcMessageNullLevel3 = Convert.toFullApcMessageNullLevel3(json);
-//   const fullApcMessageNullLevel4 = Convert.toFullApcMessageNullLevel4(json);
-//   const fullApcMessage = Convert.toFullApcMessage(json);
+//   const expandedApcMessageNullLevel1 = Convert.toExpandedApcMessageNullLevel1(json);
+//   const expandedApcMessageNullLevel2 = Convert.toExpandedApcMessageNullLevel2(json);
+//   const expandedApcMessageNullLevel3 = Convert.toExpandedApcMessageNullLevel3(json);
+//   const expandedApcMessageNullLevel4 = Convert.toExpandedApcMessageNullLevel4(json);
+//   const expandedApcMessage = Convert.toExpandedApcMessage(json);
 //
 // These functions will throw an error if the JSON doesn't
 // match the expected interface, even if the JSON is valid.
 
-export interface FullApcMessage {
+export interface ExpandedApcMessage {
   APC?: Apc;
 }
 
@@ -57,12 +57,12 @@ export interface Count {
 // Converts JSON strings to/from your types
 // and asserts the results of JSON.parse at runtime
 export class Convert {
-  public static toFullApcMessage(json: string): FullApcMessage {
-    return cast(JSON.parse(json), r("FullApcMessage"));
+  public static toExpandedApcMessage(json: string): ExpandedApcMessage {
+    return cast(JSON.parse(json), r("ExpandedApcMessage"));
   }
 
-  public static fullApcMessageToJson(value: FullApcMessage): string {
-    return JSON.stringify(uncast(value, r("FullApcMessage")), null, 2);
+  public static expandedApcMessageToJson(value: ExpandedApcMessage): string {
+    return JSON.stringify(uncast(value, r("ExpandedApcMessage")), null, 2);
   }
 
   public static toApc(json: string): Apc {
@@ -281,7 +281,7 @@ function r(name: string) {
 }
 
 const typeMap: any = {
-  FullApcMessage: o(
+  ExpandedApcMessage: o(
     [{ json: "APC", js: "APC", typ: u(undefined, r("Apc")) }],
     false
   ),

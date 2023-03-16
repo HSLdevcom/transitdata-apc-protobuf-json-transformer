@@ -1,6 +1,6 @@
 import pino from "pino";
 import Pulsar from "pulsar-client";
-import * as fullApc from "./quicktype/fullApc";
+import * as expandedApc from "./quicktype/expandedApc";
 import { passengerCount } from "./protobuf/passengerCount";
 import {
   getUniqueVehicleIdFromMqttTopic,
@@ -67,7 +67,7 @@ const mockApcJsonMessage = ({
   eventTimestamp,
   properties,
 }: {
-  mqttPayload: fullApc.FullApcMessage;
+  mqttPayload: expandedApc.ExpandedApcMessage;
   eventTimestamp: number;
   properties: { [key: string]: string };
 }): Pulsar.ProducerMessage => {
@@ -155,11 +155,11 @@ describe("Transformer", () => {
     expect(resultMessage).toBeDefined();
     let result;
     if (resultMessage != null) {
-      result = fullApc.Convert.toFullApcMessage(
+      result = expandedApc.Convert.toExpandedApcMessage(
         resultMessage.data.toString("utf-8")
       );
     }
-    const expected = fullApc.Convert.toFullApcMessage(
+    const expected = expandedApc.Convert.toExpandedApcMessage(
       jsonMessage.data.toString("utf-8")
     );
     expect(result).toStrictEqual(expected);
