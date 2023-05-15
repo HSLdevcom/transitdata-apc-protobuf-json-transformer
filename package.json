@@ -1,6 +1,6 @@
 {
   "name": "transitdata-apc-protobuf-json-transformer",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "Transform APC messages from Protobuf back to JSON",
   "main": "dist/index.js",
   "scripts": {
