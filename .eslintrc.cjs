@@ -1,6 +1,6 @@
 module.exports = {
   env: {
-    es2021: true,
+    es2023: true,
     node: true,
   },
   extends: [
@@ -17,8 +17,6 @@ module.exports = {
   ],
   parser: "@typescript-eslint/parser",
   parserOptions: {
-    ecmaVersion: 13,
-    sourceType: "module",
     project: "./tsconfig.json",
   },
   plugins: [
