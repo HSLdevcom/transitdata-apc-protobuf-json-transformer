@@ -25,7 +25,7 @@ export function wrapDefined<T>(key: string, value: T): { [k: string]: T } {
   return value === undefined ? {} : { [key]: value };
 }
 
-const longishToNumber = (
+const transformLongishToNumber = (
   x: number | Long | null | undefined,
 ): number | undefined => {
   let result;
@@ -41,7 +41,7 @@ const transformTstToIsoString = (
   tst: number | Long | null | undefined,
 ): string | undefined => {
   let result;
-  const seconds = longishToNumber(tst);
+  const seconds = transformLongishToNumber(tst);
   if (seconds != null) {
     result = new Date(1000 * seconds).toISOString();
   }
@@ -89,7 +89,7 @@ const transformPayload = (
     ...wrapDefined("oper", apcProtobufPayload.oper),
     ...wrapDefined("veh", apcProtobufPayload.veh),
     ...wrapDefined("tst", transformTstToIsoString(apcProtobufPayload.tst)),
-    ...wrapDefined("tsi", longishToNumber(apcProtobufPayload.tsi)),
+    ...wrapDefined("tsi", transformLongishToNumber(apcProtobufPayload.tsi)),
     ...wrapDefined("lat", apcProtobufPayload.lat),
     ...wrapDefined("long", apcProtobufPayload.long),
     ...wrapDefined("odo", apcProtobufPayload.odo),
