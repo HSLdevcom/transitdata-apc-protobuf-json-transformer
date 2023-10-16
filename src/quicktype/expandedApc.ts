@@ -104,8 +104,8 @@ function invalidValue(typ: any, val: any, key: any, parent: any = ""): never {
   const keyText = key ? ` for key "${key}"` : "";
   throw Error(
     `Invalid value${keyText}${parentText}. Expected ${prettyTyp} but got ${JSON.stringify(
-      val
-    )}`
+      val,
+    )}`,
   );
 }
 
@@ -150,7 +150,7 @@ function transform(
   typ: any,
   getProps: any,
   key: any = "",
-  parent: any = ""
+  parent: any = "",
 ): any {
   function transformPrimitive(typ: string, val: any): any {
     if (typeof typ === typeof val) return val;
@@ -177,7 +177,7 @@ function transform(
       }),
       val,
       key,
-      parent
+      parent,
     );
   }
 
@@ -201,7 +201,7 @@ function transform(
   function transformObject(
     props: { [k: string]: any },
     additional: any,
-    val: any
+    val: any,
   ): any {
     if (val === null || typeof val !== "object" || Array.isArray(val)) {
       return invalidValue(l(ref || "object"), val, key, parent);
@@ -283,7 +283,7 @@ function r(name: string) {
 const typeMap: any = {
   ExpandedApcMessage: o(
     [{ json: "APC", js: "APC", typ: u(undefined, r("Apc")) }],
-    false
+    false,
   ),
   Apc: o(
     [
@@ -309,7 +309,7 @@ const typeMap: any = {
         typ: u(undefined, u(r("Vehiclecounts"), null)),
       },
     ],
-    false
+    false,
   ),
   Vehiclecounts: o(
     [
@@ -330,14 +330,14 @@ const typeMap: any = {
         typ: u(undefined, u(0, null)),
       },
     ],
-    false
+    false,
   ),
   Doorcount: o(
     [
       { json: "count", js: "count", typ: u(undefined, u(a(r("Count")), null)) },
       { json: "door", js: "door", typ: u(undefined, u(null, "")) },
     ],
-    false
+    false,
   ),
   Count: o(
     [
@@ -345,6 +345,6 @@ const typeMap: any = {
       { json: "in", js: "in", typ: u(undefined, u(0, null)) },
       { json: "out", js: "out", typ: u(undefined, u(0, null)) },
     ],
-    false
+    false,
   ),
 };

@@ -47,7 +47,7 @@ const mockApcProtobufMessage = ({
     throw Error(verificationErrorMessage);
   }
   const buffer = Buffer.from(
-    passengerCount.Data.encode(passengerCount.Data.create(apcData)).finish()
+    passengerCount.Data.encode(passengerCount.Data.create(apcData)).finish(),
   );
   const message = Object.defineProperties(new Pulsar.Message(), {
     getData: {
@@ -156,11 +156,11 @@ describe("Transformer", () => {
     let result;
     if (resultMessage != null) {
       result = expandedApc.Convert.toExpandedApcMessage(
-        resultMessage.data.toString("utf-8")
+        resultMessage.data.toString("utf-8"),
       );
     }
     const expected = expandedApc.Convert.toExpandedApcMessage(
-      jsonMessage.data.toString("utf-8")
+      jsonMessage.data.toString("utf-8"),
     );
     expect(result).toStrictEqual(expected);
     expect(resultMessage).toStrictEqual(jsonMessage);

@@ -5,7 +5,7 @@ import { initializeTransformer } from "./transformer";
 const keepProcessingMessages = async (
   logger: pino.Logger,
   producer: Pulsar.Producer,
-  consumer: Pulsar.Consumer
+  consumer: Pulsar.Consumer,
 ): Promise<void> => {
   const transform = initializeTransformer(logger);
   // Errors are handled in the calling function.

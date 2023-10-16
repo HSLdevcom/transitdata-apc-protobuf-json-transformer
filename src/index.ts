@@ -21,7 +21,7 @@ const exitGracefully = async (
   closeHealthCheckServer?: () => Promise<void>,
   client?: Pulsar.Client,
   producer?: Pulsar.Producer,
-  consumer?: Pulsar.Consumer
+  consumer?: Pulsar.Consumer,
 ) => {
   if (exitError) {
     logger.fatal(exitError);
@@ -36,7 +36,7 @@ const exitGracefully = async (
   } catch (err) {
     logger.error(
       { err },
-      "Something went wrong when setting health checks to fail"
+      "Something went wrong when setting health checks to fail",
     );
   }
   try {
@@ -47,7 +47,7 @@ const exitGracefully = async (
   } catch (err) {
     logger.error(
       { err },
-      "Something went wrong when closing HFP Pulsar consumer"
+      "Something went wrong when closing HFP Pulsar consumer",
     );
   }
   try {
@@ -82,7 +82,7 @@ const exitGracefully = async (
   } catch (err) {
     logger.error(
       { err },
-      "Something went wrong when closing health check server"
+      "Something went wrong when closing health check server",
     );
   }
   logger.info("Exit process");
@@ -119,7 +119,7 @@ const exitGracefully = async (
         closeHealthCheckServer,
         client,
         producer,
-        consumer
+        consumer,
       );
       /* eslint-enable @typescript-eslint/no-floating-promises */
     };
@@ -128,7 +128,7 @@ const exitGracefully = async (
       // Handle different kinds of exits.
       process.on("beforeExit", () => exitHandler(1, new Error("beforeExit")));
       process.on("unhandledRejection", (reason) =>
-        exitHandler(1, transformUnknownToError(reason))
+        exitHandler(1, transformUnknownToError(reason)),
       );
       process.on("uncaughtException", (err) => exitHandler(1, err));
       process.on("SIGINT", (signal) => exitHandler(130, new Error(signal)));
@@ -144,13 +144,13 @@ const exitGracefully = async (
       logger.info("Create Pulsar consumer");
       consumer = await createPulsarConsumer(
         client,
-        config.pulsar.consumerConfig
+        config.pulsar.consumerConfig,
       );
       logger.info("Create health check server");
       ({ closeHealthCheckServer, setHealth } = createHealthCheckServer(
         config.healthCheck,
         producer,
-        consumer
+        consumer,
       ));
       logger.info("Set health check status to OK");
       setHealth(true);

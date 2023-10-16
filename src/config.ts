@@ -32,7 +32,7 @@ const getOptional = (envVariable: string) => process.env[envVariable];
 
 const getOptionalBooleanWithDefault = (
   envVariable: string,
-  defaultValue: boolean
+  defaultValue: boolean,
 ) => {
   let result = defaultValue;
   const str = getOptional(envVariable);
@@ -51,7 +51,7 @@ const createPulsarLog =
     level: Pulsar.LogLevel,
     file: string,
     line: number,
-    message: string
+    message: string,
   ): void => {
     switch (level) {
       case Pulsar.LogLevel.DEBUG:
@@ -85,7 +85,7 @@ const getPulsarCompressionType = (): Pulsar.CompressionType => {
   ) {
     throw new Error(
       "If defined, PULSAR_COMPRESSION_TYPE must be one of 'Zlib', 'LZ4', " +
-        "'ZSTD' or 'SNAPPY'. Default is 'LZ4'."
+        "'ZSTD' or 'SNAPPY'. Default is 'LZ4'.",
     );
   }
   return compressionType;
@@ -97,7 +97,7 @@ const getPulsarConfig = (logger: pino.Logger): PulsarConfig => {
   const producerTopic = getRequired("PULSAR_PRODUCER_TOPIC");
   const blockIfQueueFull = getOptionalBooleanWithDefault(
     "PULSAR_BLOCK_IF_QUEUE_FULL",
-    true
+    true,
   );
   const compressionType = getPulsarCompressionType();
   const consumerTopic = getRequired("PULSAR_CONSUMER_TOPIC");

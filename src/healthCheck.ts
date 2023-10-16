@@ -6,7 +6,7 @@ import type { HealthCheckConfig } from "./config";
 const createHealthCheckServer = (
   { port }: HealthCheckConfig,
   producer: Pulsar.Producer,
-  consumer: Pulsar.Consumer
+  consumer: Pulsar.Consumer,
 ) => {
   let isHealthSetToOk = false;
   let server: http.Server | undefined = http.createServer((req, res) => {

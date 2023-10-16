@@ -104,7 +104,7 @@ export const passengerCount = ($root.passengerCount = (() => {
         writer.uint32(/* id 2, wireType 2 =*/ 18).string(message.topic);
       $root.passengerCount.Payload.encode(
         message.payload,
-        writer.uint32(/* id 3, wireType 2 =*/ 26).fork()
+        writer.uint32(/* id 3, wireType 2 =*/ 26).fork(),
       ).ldelim();
       if (
         message.receivedAt != null &&
@@ -156,7 +156,7 @@ export const passengerCount = ($root.passengerCount = (() => {
           case 3: {
             message.payload = $root.passengerCount.Payload.decode(
               reader,
-              reader.uint32()
+              reader.uint32(),
             );
             break;
           }
@@ -245,13 +245,13 @@ export const passengerCount = ($root.passengerCount = (() => {
         if (typeof object.payload !== "object")
           throw TypeError(".passengerCount.Data.payload: object expected");
         message.payload = $root.passengerCount.Payload.fromObject(
-          object.payload
+          object.payload,
         );
       }
       if (object.receivedAt != null)
         if ($util.Long)
           (message.receivedAt = $util.Long.fromValue(
-            object.receivedAt
+            object.receivedAt,
           )).unsigned = false;
         else if (typeof object.receivedAt === "string")
           message.receivedAt = parseInt(object.receivedAt, 10);
@@ -260,7 +260,7 @@ export const passengerCount = ($root.passengerCount = (() => {
         else if (typeof object.receivedAt === "object")
           message.receivedAt = new $util.LongBits(
             object.receivedAt.low >>> 0,
-            object.receivedAt.high >>> 0
+            object.receivedAt.high >>> 0,
           ).toNumber();
       return message;
     };
@@ -301,7 +301,7 @@ export const passengerCount = ($root.passengerCount = (() => {
       if (message.payload != null && message.hasOwnProperty("payload"))
         object.payload = $root.passengerCount.Payload.toObject(
           message.payload,
-          options
+          options,
         );
       if (message.receivedAt != null && message.hasOwnProperty("receivedAt"))
         if (typeof message.receivedAt === "number")
@@ -316,7 +316,7 @@ export const passengerCount = ($root.passengerCount = (() => {
               : options.longs === Number
               ? new $util.LongBits(
                   message.receivedAt.low >>> 0,
-                  message.receivedAt.high >>> 0
+                  message.receivedAt.high >>> 0,
                 ).toNumber()
               : message.receivedAt;
       return object;
@@ -586,7 +586,7 @@ export const passengerCount = ($root.passengerCount = (() => {
       )
         $root.passengerCount.VehicleCounts.encode(
           message.vehicleCounts,
-          writer.uint32(/* id 17, wireType 2 =*/ 138).fork()
+          writer.uint32(/* id 17, wireType 2 =*/ 138).fork(),
         ).ldelim();
       return writer;
     };
@@ -689,7 +689,7 @@ export const passengerCount = ($root.passengerCount = (() => {
           case 17: {
             message.vehicleCounts = $root.passengerCount.VehicleCounts.decode(
               reader,
-              reader.uint32()
+              reader.uint32(),
             );
             break;
           }
@@ -780,7 +780,7 @@ export const passengerCount = ($root.passengerCount = (() => {
         message.hasOwnProperty("vehicleCounts")
       ) {
         let error = $root.passengerCount.VehicleCounts.verify(
-          message.vehicleCounts
+          message.vehicleCounts,
         );
         if (error) return "vehicleCounts." + error;
       }
@@ -811,7 +811,7 @@ export const passengerCount = ($root.passengerCount = (() => {
         else if (typeof object.tst === "object")
           message.tst = new $util.LongBits(
             object.tst.low >>> 0,
-            object.tst.high >>> 0
+            object.tst.high >>> 0,
           ).toNumber();
       if (object.tsi != null)
         if ($util.Long)
@@ -822,7 +822,7 @@ export const passengerCount = ($root.passengerCount = (() => {
         else if (typeof object.tsi === "object")
           message.tsi = new $util.LongBits(
             object.tsi.low >>> 0,
-            object.tsi.high >>> 0
+            object.tsi.high >>> 0,
           ).toNumber();
       if (object.lat != null) message.lat = Number(object.lat);
       if (object.long != null) message.long = Number(object.long);
@@ -837,10 +837,10 @@ export const passengerCount = ($root.passengerCount = (() => {
       if (object.vehicleCounts != null) {
         if (typeof object.vehicleCounts !== "object")
           throw TypeError(
-            ".passengerCount.Payload.vehicleCounts: object expected"
+            ".passengerCount.Payload.vehicleCounts: object expected",
           );
         message.vehicleCounts = $root.passengerCount.VehicleCounts.fromObject(
-          object.vehicleCounts
+          object.vehicleCounts,
         );
       }
       return message;
@@ -912,7 +912,7 @@ export const passengerCount = ($root.passengerCount = (() => {
               : options.longs === Number
               ? new $util.LongBits(
                   message.tst.low >>> 0,
-                  message.tst.high >>> 0
+                  message.tst.high >>> 0,
                 ).toNumber()
               : message.tst;
       if (message.tsi != null && message.hasOwnProperty("tsi"))
@@ -926,7 +926,7 @@ export const passengerCount = ($root.passengerCount = (() => {
               : options.longs === Number
               ? new $util.LongBits(
                   message.tsi.low >>> 0,
-                  message.tsi.high >>> 0
+                  message.tsi.high >>> 0,
                 ).toNumber()
               : message.tsi;
       if (message.lat != null && message.hasOwnProperty("lat"))
@@ -964,7 +964,7 @@ export const passengerCount = ($root.passengerCount = (() => {
       )
         object.vehicleCounts = $root.passengerCount.VehicleCounts.toObject(
           message.vehicleCounts,
-          options
+          options,
         );
       return object;
     };
@@ -1109,7 +1109,7 @@ export const passengerCount = ($root.passengerCount = (() => {
         for (let i = 0; i < message.doorCounts.length; ++i)
           $root.passengerCount.DoorCount.encode(
             message.doorCounts[i],
-            writer.uint32(/* id 4, wireType 2 =*/ 34).fork()
+            writer.uint32(/* id 4, wireType 2 =*/ 34).fork(),
           ).ldelim();
       if (
         message.extensions != null &&
@@ -1166,7 +1166,7 @@ export const passengerCount = ($root.passengerCount = (() => {
             if (!(message.doorCounts && message.doorCounts.length))
               message.doorCounts = [];
             message.doorCounts.push(
-              $root.passengerCount.DoorCount.decode(reader, reader.uint32())
+              $root.passengerCount.DoorCount.decode(reader, reader.uint32()),
             );
             break;
           }
@@ -1228,7 +1228,7 @@ export const passengerCount = ($root.passengerCount = (() => {
           return "doorCounts: array expected";
         for (let i = 0; i < message.doorCounts.length; ++i) {
           let error = $root.passengerCount.DoorCount.verify(
-            message.doorCounts[i]
+            message.doorCounts[i],
           );
           if (error) return "doorCounts." + error;
         }
@@ -1259,16 +1259,16 @@ export const passengerCount = ($root.passengerCount = (() => {
       if (object.doorCounts) {
         if (!Array.isArray(object.doorCounts))
           throw TypeError(
-            ".passengerCount.VehicleCounts.doorCounts: array expected"
+            ".passengerCount.VehicleCounts.doorCounts: array expected",
           );
         message.doorCounts = [];
         for (let i = 0; i < object.doorCounts.length; ++i) {
           if (typeof object.doorCounts[i] !== "object")
             throw TypeError(
-              ".passengerCount.VehicleCounts.doorCounts: object expected"
+              ".passengerCount.VehicleCounts.doorCounts: object expected",
             );
           message.doorCounts[i] = $root.passengerCount.DoorCount.fromObject(
-            object.doorCounts[i]
+            object.doorCounts[i],
           );
         }
       }
@@ -1316,7 +1316,7 @@ export const passengerCount = ($root.passengerCount = (() => {
         for (let j = 0; j < message.doorCounts.length; ++j)
           object.doorCounts[j] = $root.passengerCount.DoorCount.toObject(
             message.doorCounts[j],
-            options
+            options,
           );
       }
       if (message.extensions != null && message.hasOwnProperty("extensions"))
@@ -1422,7 +1422,7 @@ export const passengerCount = ($root.passengerCount = (() => {
         for (let i = 0; i < message.count.length; ++i)
           $root.passengerCount.Count.encode(
             message.count[i],
-            writer.uint32(/* id 2, wireType 2 =*/ 18).fork()
+            writer.uint32(/* id 2, wireType 2 =*/ 18).fork(),
           ).ldelim();
       return writer;
     };
@@ -1465,7 +1465,7 @@ export const passengerCount = ($root.passengerCount = (() => {
           case 2: {
             if (!(message.count && message.count.length)) message.count = [];
             message.count.push(
-              $root.passengerCount.Count.decode(reader, reader.uint32())
+              $root.passengerCount.Count.decode(reader, reader.uint32()),
             );
             break;
           }
@@ -1535,7 +1535,7 @@ export const passengerCount = ($root.passengerCount = (() => {
           if (typeof object.count[i] !== "object")
             throw TypeError(".passengerCount.DoorCount.count: object expected");
           message.count[i] = $root.passengerCount.Count.fromObject(
-            object.count[i]
+            object.count[i],
           );
         }
       }
@@ -1563,7 +1563,7 @@ export const passengerCount = ($root.passengerCount = (() => {
         for (let j = 0; j < message.count.length; ++j)
           object.count[j] = $root.passengerCount.Count.toObject(
             message.count[j],
-            options
+            options,
           );
       }
       return object;

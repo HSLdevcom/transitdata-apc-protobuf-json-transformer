@@ -5,7 +5,7 @@ import type * as expandedApc from "./quicktype/expandedApc";
 import { passengerCount } from "./protobuf/passengerCount";
 
 export const getUniqueVehicleIdFromMqttTopic = (
-  topic: string
+  topic: string,
 ): string | undefined => {
   const parts = topic.split("/");
   if (parts.length >= 9) {
@@ -26,7 +26,7 @@ export function wrapDefined<T>(key: string, value: T): { [k: string]: T } {
 }
 
 const longishToNumber = (
-  x: number | Long | null | undefined
+  x: number | Long | null | undefined,
 ): number | undefined => {
   let result;
   if (x != null) {
@@ -38,7 +38,7 @@ const longishToNumber = (
 };
 
 const transformTstToIsoString = (
-  tst: number | Long | null | undefined
+  tst: number | Long | null | undefined,
 ): string | undefined => {
   let result;
   const seconds = longishToNumber(tst);
@@ -49,7 +49,7 @@ const transformTstToIsoString = (
 };
 
 const transformVehicleCounts = (
-  vehiclecounts: passengerCount.IVehicleCounts | null | undefined
+  vehiclecounts: passengerCount.IVehicleCounts | null | undefined,
 ): expandedApc.Vehiclecounts | undefined => {
   let result: expandedApc.Vehiclecounts | undefined;
   if (vehiclecounts != null) {
@@ -81,7 +81,7 @@ const transformVehicleCounts = (
 };
 
 const transformPayload = (
-  apcProtobufPayload: passengerCount.IPayload
+  apcProtobufPayload: passengerCount.IPayload,
 ): expandedApc.ExpandedApcMessage => ({
   APC: {
     ...wrapDefined("desi", apcProtobufPayload.desi),
@@ -102,34 +102,34 @@ const transformPayload = (
     ...wrapDefined("route", apcProtobufPayload.route),
     ...wrapDefined(
       "vehiclecounts",
-      transformVehicleCounts(apcProtobufPayload.vehicleCounts)
+      transformVehicleCounts(apcProtobufPayload.vehicleCounts),
     ),
   },
 });
 
 export const initializeTransformer = (
-  logger: pino.Logger
+  logger: pino.Logger,
 ): ((msg: Pulsar.Message) => Pulsar.ProducerMessage | undefined) => {
   const transform = (
-    protobufMessage: Pulsar.Message
+    protobufMessage: Pulsar.Message,
   ): Pulsar.ProducerMessage | undefined => {
     let result: Pulsar.ProducerMessage | undefined;
     const apcData = passengerCount.Data.decode(protobufMessage.getData());
     if (apcData.topic == null) {
       logger.warn(
         { apcData },
-        "APC data is missing topic and thus the owning operator and its vehicle number"
+        "APC data is missing topic and thus the owning operator and its vehicle number",
       );
     } else {
       const mqttTopicSuffix = getUniqueVehicleIdFromMqttTopic(apcData.topic);
       if (mqttTopicSuffix === undefined) {
         logger.warn(
           { topic: apcData.topic },
-          "APC data has an unexpected topic format"
+          "APC data has an unexpected topic format",
         );
       } else {
         const mqttPayload: expandedApc.ExpandedApcMessage = transformPayload(
-          apcData.payload
+          apcData.payload,
         );
         const encoded = Buffer.from(JSON.stringify(mqttPayload), "utf8");
         result = {

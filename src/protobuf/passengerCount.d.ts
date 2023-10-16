@@ -43,7 +43,7 @@ export namespace passengerCount {
      * @returns Data instance
      */
     public static create(
-      properties?: passengerCount.IData
+      properties?: passengerCount.IData,
     ): passengerCount.Data;
 
     /**
@@ -54,7 +54,7 @@ export namespace passengerCount {
      */
     public static encode(
       message: passengerCount.IData,
-      writer?: $protobuf.Writer
+      writer?: $protobuf.Writer,
     ): $protobuf.Writer;
 
     /**
@@ -65,7 +65,7 @@ export namespace passengerCount {
      */
     public static encodeDelimited(
       message: passengerCount.IData,
-      writer?: $protobuf.Writer
+      writer?: $protobuf.Writer,
     ): $protobuf.Writer;
 
     /**
@@ -78,7 +78,7 @@ export namespace passengerCount {
      */
     public static decode(
       reader: $protobuf.Reader | Uint8Array,
-      length?: number
+      length?: number,
     ): passengerCount.Data;
 
     /**
@@ -89,7 +89,7 @@ export namespace passengerCount {
      * @throws {$protobuf.util.ProtocolError} If required fields are missing
      */
     public static decodeDelimited(
-      reader: $protobuf.Reader | Uint8Array
+      reader: $protobuf.Reader | Uint8Array,
     ): passengerCount.Data;
 
     /**
@@ -114,7 +114,7 @@ export namespace passengerCount {
      */
     public static toObject(
       message: passengerCount.Data,
-      options?: $protobuf.IConversionOptions
+      options?: $protobuf.IConversionOptions,
     ): { [k: string]: any };
 
     /**
@@ -250,7 +250,7 @@ export namespace passengerCount {
      * @returns Payload instance
      */
     public static create(
-      properties?: passengerCount.IPayload
+      properties?: passengerCount.IPayload,
     ): passengerCount.Payload;
 
     /**
@@ -261,7 +261,7 @@ export namespace passengerCount {
      */
     public static encode(
       message: passengerCount.IPayload,
-      writer?: $protobuf.Writer
+      writer?: $protobuf.Writer,
     ): $protobuf.Writer;
 
     /**
@@ -272,7 +272,7 @@ export namespace passengerCount {
      */
     public static encodeDelimited(
       message: passengerCount.IPayload,
-      writer?: $protobuf.Writer
+      writer?: $protobuf.Writer,
     ): $protobuf.Writer;
 
     /**
@@ -285,7 +285,7 @@ export namespace passengerCount {
      */
     public static decode(
       reader: $protobuf.Reader | Uint8Array,
-      length?: number
+      length?: number,
     ): passengerCount.Payload;
 
     /**
@@ -296,7 +296,7 @@ export namespace passengerCount {
      * @throws {$protobuf.util.ProtocolError} If required fields are missing
      */
     public static decodeDelimited(
-      reader: $protobuf.Reader | Uint8Array
+      reader: $protobuf.Reader | Uint8Array,
     ): passengerCount.Payload;
 
     /**
@@ -323,7 +323,7 @@ export namespace passengerCount {
      */
     public static toObject(
       message: passengerCount.Payload,
-      options?: $protobuf.IConversionOptions
+      options?: $protobuf.IConversionOptions,
     ): { [k: string]: any };
 
     /**
@@ -387,7 +387,7 @@ export namespace passengerCount {
      * @returns VehicleCounts instance
      */
     public static create(
-      properties?: passengerCount.IVehicleCounts
+      properties?: passengerCount.IVehicleCounts,
     ): passengerCount.VehicleCounts;
 
     /**
@@ -398,7 +398,7 @@ export namespace passengerCount {
      */
     public static encode(
       message: passengerCount.IVehicleCounts,
-      writer?: $protobuf.Writer
+      writer?: $protobuf.Writer,
     ): $protobuf.Writer;
 
     /**
@@ -409,7 +409,7 @@ export namespace passengerCount {
      */
     public static encodeDelimited(
       message: passengerCount.IVehicleCounts,
-      writer?: $protobuf.Writer
+      writer?: $protobuf.Writer,
     ): $protobuf.Writer;
 
     /**
@@ -422,7 +422,7 @@ export namespace passengerCount {
      */
     public static decode(
       reader: $protobuf.Reader | Uint8Array,
-      length?: number
+      length?: number,
     ): passengerCount.VehicleCounts;
 
     /**
@@ -433,7 +433,7 @@ export namespace passengerCount {
      * @throws {$protobuf.util.ProtocolError} If required fields are missing
      */
     public static decodeDelimited(
-      reader: $protobuf.Reader | Uint8Array
+      reader: $protobuf.Reader | Uint8Array,
     ): passengerCount.VehicleCounts;
 
     /**
@@ -460,7 +460,7 @@ export namespace passengerCount {
      */
     public static toObject(
       message: passengerCount.VehicleCounts,
-      options?: $protobuf.IConversionOptions
+      options?: $protobuf.IConversionOptions,
     ): { [k: string]: any };
 
     /**
@@ -506,7 +506,7 @@ export namespace passengerCount {
      * @returns DoorCount instance
      */
     public static create(
-      properties?: passengerCount.IDoorCount
+      properties?: passengerCount.IDoorCount,
     ): passengerCount.DoorCount;
 
     /**
@@ -517,7 +517,7 @@ export namespace passengerCount {
      */
     public static encode(
       message: passengerCount.IDoorCount,
-      writer?: $protobuf.Writer
+      writer?: $protobuf.Writer,
     ): $protobuf.Writer;
 
     /**
@@ -528,7 +528,7 @@ export namespace passengerCount {
      */
     public static encodeDelimited(
       message: passengerCount.IDoorCount,
-      writer?: $protobuf.Writer
+      writer?: $protobuf.Writer,
     ): $protobuf.Writer;
 
     /**
@@ -541,7 +541,7 @@ export namespace passengerCount {
      */
     public static decode(
       reader: $protobuf.Reader | Uint8Array,
-      length?: number
+      length?: number,
     ): passengerCount.DoorCount;
 
     /**
@@ -552,7 +552,7 @@ export namespace passengerCount {
      * @throws {$protobuf.util.ProtocolError} If required fields are missing
      */
     public static decodeDelimited(
-      reader: $protobuf.Reader | Uint8Array
+      reader: $protobuf.Reader | Uint8Array,
     ): passengerCount.DoorCount;
 
     /**
@@ -579,7 +579,7 @@ export namespace passengerCount {
      */
     public static toObject(
       message: passengerCount.DoorCount,
-      options?: $protobuf.IConversionOptions
+      options?: $protobuf.IConversionOptions,
     ): { [k: string]: any };
 
     /**
@@ -631,7 +631,7 @@ export namespace passengerCount {
      * @returns Count instance
      */
     public static create(
-      properties?: passengerCount.ICount
+      properties?: passengerCount.ICount,
     ): passengerCount.Count;
 
     /**
@@ -642,7 +642,7 @@ export namespace passengerCount {
      */
     public static encode(
       message: passengerCount.ICount,
-      writer?: $protobuf.Writer
+      writer?: $protobuf.Writer,
     ): $protobuf.Writer;
 
     /**
@@ -653,7 +653,7 @@ export namespace passengerCount {
      */
     public static encodeDelimited(
       message: passengerCount.ICount,
-      writer?: $protobuf.Writer
+      writer?: $protobuf.Writer,
     ): $protobuf.Writer;
 
     /**
@@ -666,7 +666,7 @@ export namespace passengerCount {
      */
     public static decode(
       reader: $protobuf.Reader | Uint8Array,
-      length?: number
+      length?: number,
     ): passengerCount.Count;
 
     /**
@@ -677,7 +677,7 @@ export namespace passengerCount {
      * @throws {$protobuf.util.ProtocolError} If required fields are missing
      */
     public static decodeDelimited(
-      reader: $protobuf.Reader | Uint8Array
+      reader: $protobuf.Reader | Uint8Array,
     ): passengerCount.Count;
 
     /**
@@ -704,7 +704,7 @@ export namespace passengerCount {
      */
     public static toObject(
       message: passengerCount.Count,
-      options?: $protobuf.IConversionOptions
+      options?: $protobuf.IConversionOptions,
     ): { [k: string]: any };
 
     /**
