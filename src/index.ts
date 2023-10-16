@@ -96,11 +96,16 @@ const exitGracefully = async (
 (async () => {
   /* eslint-enable @typescript-eslint/no-floating-promises */
   try {
-    const logger = pino({
-      name: "transitdata-apc-protobuf-json-transformer",
-      timestamp: pino.stdTimeFunctions.isoTime,
-      sync: true,
-    });
+    const logger = pino(
+      {
+        name: "transitdata-apc-protobuf-json-transformer",
+        timestamp: pino.stdTimeFunctions.isoTime,
+        // As logger is started before config is created, read the level from
+        // env.
+        level: process.env["PINO_LOG_LEVEL"] ?? "info",
+      },
+      pino.destination({ sync: true }),
+    );
 
     let setHealth: (isOk: boolean) => void;
     let closeHealthCheckServer: () => Promise<void>;
