@@ -47,10 +47,12 @@ FROM node:18-slim AS production
 ARG DEBIAN_FRONTEND=noninteractive
 ENV NODE_ENV=production
 
+# curl is used as the health check client.
 RUN apt-get update \
   && apt-get upgrade -y \
   && apt-get -y --no-install-recommends install \
   'ca-certificates' \
+  'curl' \
   'tini' \
   && rm -rf /var/lib/apt/lists/*
 
