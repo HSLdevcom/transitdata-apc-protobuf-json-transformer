@@ -287,8 +287,8 @@ export const passengerCount = ($root.passengerCount = (() => {
             options.longs === String
               ? long.toString()
               : options.longs === Number
-              ? long.toNumber()
-              : long;
+                ? long.toNumber()
+                : long;
         } else object.receivedAt = options.longs === String ? "0" : 0;
       }
       if (
@@ -314,11 +314,11 @@ export const passengerCount = ($root.passengerCount = (() => {
             options.longs === String
               ? $util.Long.prototype.toString.call(message.receivedAt)
               : options.longs === Number
-              ? new $util.LongBits(
-                  message.receivedAt.low >>> 0,
-                  message.receivedAt.high >>> 0,
-                ).toNumber()
-              : message.receivedAt;
+                ? new $util.LongBits(
+                    message.receivedAt.low >>> 0,
+                    message.receivedAt.high >>> 0,
+                  ).toNumber()
+                : message.receivedAt;
       return object;
     };
 
@@ -869,8 +869,8 @@ export const passengerCount = ($root.passengerCount = (() => {
             options.longs === String
               ? long.toString()
               : options.longs === Number
-              ? long.toNumber()
-              : long;
+                ? long.toNumber()
+                : long;
         } else object.tst = options.longs === String ? "0" : 0;
         if ($util.Long) {
           let long = new $util.Long(0, 0, false);
@@ -878,8 +878,8 @@ export const passengerCount = ($root.passengerCount = (() => {
             options.longs === String
               ? long.toString()
               : options.longs === Number
-              ? long.toNumber()
-              : long;
+                ? long.toNumber()
+                : long;
         } else object.tsi = options.longs === String ? "0" : 0;
         object.lat = 0;
         object.long = 0;
@@ -910,11 +910,11 @@ export const passengerCount = ($root.passengerCount = (() => {
             options.longs === String
               ? $util.Long.prototype.toString.call(message.tst)
               : options.longs === Number
-              ? new $util.LongBits(
-                  message.tst.low >>> 0,
-                  message.tst.high >>> 0,
-                ).toNumber()
-              : message.tst;
+                ? new $util.LongBits(
+                    message.tst.low >>> 0,
+                    message.tst.high >>> 0,
+                  ).toNumber()
+                : message.tst;
       if (message.tsi != null && message.hasOwnProperty("tsi"))
         if (typeof message.tsi === "number")
           object.tsi =
@@ -924,11 +924,11 @@ export const passengerCount = ($root.passengerCount = (() => {
             options.longs === String
               ? $util.Long.prototype.toString.call(message.tsi)
               : options.longs === Number
-              ? new $util.LongBits(
-                  message.tsi.low >>> 0,
-                  message.tsi.high >>> 0,
-                ).toNumber()
-              : message.tsi;
+                ? new $util.LongBits(
+                    message.tsi.low >>> 0,
+                    message.tsi.high >>> 0,
+                  ).toNumber()
+                : message.tsi;
       if (message.lat != null && message.hasOwnProperty("lat"))
         object.lat =
           options.json && !isFinite(message.lat)
