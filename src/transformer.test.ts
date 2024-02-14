@@ -77,11 +77,14 @@ const mockApcJsonMessage = ({
 
 describe("Transformer", () => {
   test("Providing a valid input message results in a valid output message", () => {
-    const logger = pino({
-      name: "test-logger",
-      timestamp: pino.stdTimeFunctions.isoTime,
-      sync: true,
-    });
+    const logger = pino(
+      {
+        name: "test-logger",
+        timestamp: pino.stdTimeFunctions.isoTime,
+        level: "debug",
+      },
+      pino.destination({ sync: true }),
+    );
     const transform = initializeTransformer(logger);
     const protobufMessage = mockApcProtobufMessage({
       payload: {
