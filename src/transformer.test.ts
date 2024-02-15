@@ -77,11 +77,14 @@ const mockApcJsonMessage = ({
 
 describe("Transformer", () => {
   test("Providing a valid input message results in a valid output message", () => {
-    const logger = pino({
-      name: "test-logger",
-      timestamp: pino.stdTimeFunctions.isoTime,
-      sync: true,
-    });
+    const logger = pino(
+      {
+        name: "test-logger",
+        timestamp: pino.stdTimeFunctions.isoTime,
+        level: "debug",
+      },
+      pino.destination({ sync: true }),
+    );
     const transform = initializeTransformer(logger);
     const protobufMessage = mockApcProtobufMessage({
       payload: {
@@ -150,6 +153,170 @@ describe("Transformer", () => {
         "mqtt-topic": "0018/00817",
       },
       eventTimestamp: 1660731500000,
+    });
+    const resultMessage = transform(protobufMessage);
+    expect(resultMessage).toBeDefined();
+    let result;
+    if (resultMessage != null) {
+      result = expandedApc.Convert.toExpandedApcMessage(
+        resultMessage.data.toString("utf-8"),
+      );
+    }
+    const expected = expandedApc.Convert.toExpandedApcMessage(
+      jsonMessage.data.toString("utf-8"),
+    );
+    expect(result).toStrictEqual(expected);
+    expect(resultMessage).toStrictEqual(jsonMessage);
+  });
+
+  test("Providing an input message with null values provides an output message with missing properties instead of zero values", () => {
+    const logger = pino(
+      {
+        name: "test-logger",
+        timestamp: pino.stdTimeFunctions.isoTime,
+        level: "debug",
+      },
+      pino.destination({ sync: true }),
+    );
+    const transform = initializeTransformer(logger);
+    const protobufMessage = mockApcProtobufMessage({
+      payload: {
+        desi: null,
+        dir: null,
+        oper: null,
+        veh: 1028,
+        odo: 15597,
+        oday: null,
+        jrn: null,
+        line: null,
+        start: null,
+        loc: "GPS",
+        stop: null,
+        route: "1500",
+        tst: 1707664049,
+        tsi: 1707664049,
+        lat: 60.20546,
+        long: 24.87675,
+        vehicleCounts: {
+          vehicleLoad: 2,
+          vehicleLoadRatio: 0.02,
+          doorCounts: [
+            { door: "1", count: [{ clazz: "adult", in: 0, out: 3 }] },
+            { door: "2", count: [{ clazz: "adult", in: 0, out: 3 }] },
+            { door: "3", count: [{ clazz: "adult", in: 0, out: 3 }] },
+          ],
+          countQuality: "regular",
+          extensions: "",
+        },
+      },
+      mqttTopic: "/hfp/v2/journey/ongoing/apc-partial/bus/0018/01028",
+      eventTimestamp: 1707664053746,
+    });
+    const jsonMessage = mockApcJsonMessage({
+      mqttPayload: {
+        APC: {
+          veh: 1028,
+          tst: "2024-02-11T15:07:29.000Z",
+          tsi: 1707664049,
+          lat: 60.20546,
+          long: 24.87675,
+          odo: 15597,
+          loc: "GPS",
+          route: "1500",
+          vehiclecounts: {
+            countquality: "regular",
+            vehicleload: 2,
+            vehicleloadratio: 0.02,
+            doorcounts: [
+              { door: "1", count: [{ class: "adult", in: 0, out: 3 }] },
+              { door: "2", count: [{ class: "adult", in: 0, out: 3 }] },
+              { door: "3", count: [{ class: "adult", in: 0, out: 3 }] },
+            ],
+          },
+        },
+      },
+      properties: {
+        "mqtt-topic": "0018/01028",
+      },
+      eventTimestamp: 1707664053746,
+    });
+    const resultMessage = transform(protobufMessage);
+    expect(resultMessage).toBeDefined();
+    let result;
+    if (resultMessage != null) {
+      result = expandedApc.Convert.toExpandedApcMessage(
+        resultMessage.data.toString("utf-8"),
+      );
+    }
+    const expected = expandedApc.Convert.toExpandedApcMessage(
+      jsonMessage.data.toString("utf-8"),
+    );
+    expect(result).toStrictEqual(expected);
+    expect(resultMessage).toStrictEqual(jsonMessage);
+  });
+
+  test("Providing an input message with missing properties provides an output message with missing properties instead of zero values", () => {
+    const logger = pino(
+      {
+        name: "test-logger",
+        timestamp: pino.stdTimeFunctions.isoTime,
+        level: "debug",
+      },
+      pino.destination({ sync: true }),
+    );
+    const transform = initializeTransformer(logger);
+    const protobufMessage = mockApcProtobufMessage({
+      payload: {
+        veh: 1028,
+        odo: 15597,
+        loc: "GPS",
+        route: "1500",
+        tst: 1707664049,
+        tsi: 1707664049,
+        lat: 60.20546,
+        long: 24.87675,
+        vehicleCounts: {
+          vehicleLoad: 2,
+          vehicleLoadRatio: 0.02,
+          doorCounts: [
+            { door: "1", count: [{ clazz: "adult", in: 0, out: 3 }] },
+            { door: "2", count: [{ clazz: "adult", in: 0, out: 3 }] },
+            { door: "3", count: [{ clazz: "adult", in: 0, out: 3 }] },
+          ],
+          countQuality: "regular",
+          extensions: "",
+        },
+      },
+      mqttTopic: "/hfp/v2/journey/ongoing/apc-partial/bus/0018/01028",
+      eventTimestamp: 1707664053746,
+    });
+    const jsonMessage = mockApcJsonMessage({
+      mqttPayload: {
+        APC: {
+          veh: 1028,
+          tst: "2024-02-11T15:07:29.000Z",
+          tsi: 1707664049,
+          lat: 60.20546,
+          long: 24.87675,
+          odo: 15597,
+          loc: "GPS",
+          route: "1500",
+          vehiclecounts: {
+            countquality: "regular",
+            vehicleload: 2,
+            vehicleloadratio: 0.02,
+            doorcounts: [
+              { door: "1", count: [{ class: "adult", in: 0, out: 3 }] },
+              { door: "2", count: [{ class: "adult", in: 0, out: 3 }] },
+              { door: "3", count: [{ class: "adult", in: 0, out: 3 }] },
+            ],
+          },
+        },
+      },
+      properties: {
+        "mqtt-topic": "0018/01028",
+      },
+      eventTimestamp: 1707664053746,
     });
     const resultMessage = transform(protobufMessage);
     expect(resultMessage).toBeDefined();

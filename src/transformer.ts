@@ -107,6 +107,33 @@ const transformPayload = (
   },
 });
 
+export const decodeProtobufData = (
+  logger: pino.Logger,
+  message: Pulsar.Message,
+): passengerCount.IData | undefined => {
+  const messageData = message.getData();
+  let data: passengerCount.IData | undefined;
+  try {
+    // Use toObject to get rid off probobufjs-generated zero values for missing
+    // fields.
+    data = passengerCount.Data.toObject(
+      passengerCount.Data.decode(messageData),
+    ) as passengerCount.IData;
+  } catch (err) {
+    logger.warn(
+      {
+        err,
+        properties: { ...message.getProperties() },
+        messageId: message.getMessageId().toString(),
+        dataString: messageData.toString("utf8"),
+        eventTimestamp: message.getEventTimestamp(),
+      },
+      "Decoding the expanded APC message failed. Dropping the message",
+    );
+  }
+  return data;
+};
+
 export const initializeTransformer = (
   logger: pino.Logger,
 ): ((msg: Pulsar.Message) => Pulsar.ProducerMessage | undefined) => {
@@ -114,31 +141,33 @@ export const initializeTransformer = (
     protobufMessage: Pulsar.Message,
   ): Pulsar.ProducerMessage | undefined => {
     let result: Pulsar.ProducerMessage | undefined;
-    const apcData = passengerCount.Data.decode(protobufMessage.getData());
-    if (apcData.topic == null) {
-      logger.warn(
-        { apcData },
-        "APC data is missing topic and thus the owning operator and its vehicle number",
-      );
-    } else {
-      const mqttTopicSuffix = getUniqueVehicleIdFromMqttTopic(apcData.topic);
-      if (mqttTopicSuffix === undefined) {
+    const apcData = decodeProtobufData(logger, protobufMessage);
+    if (apcData != null) {
+      if (apcData.topic == null) {
         logger.warn(
-          { topic: apcData.topic },
-          "APC data has an unexpected topic format",
+          { apcData },
+          "APC data is missing topic and thus the owning operator and its vehicle number",
         );
       } else {
-        const mqttPayload: expandedApc.ExpandedApcMessage = transformPayload(
-          apcData.payload,
-        );
-        const encoded = Buffer.from(JSON.stringify(mqttPayload), "utf8");
-        result = {
-          data: encoded,
-          eventTimestamp: protobufMessage.getEventTimestamp(),
-          properties: {
-            "mqtt-topic": mqttTopicSuffix,
-          },
-        };
+        const mqttTopicSuffix = getUniqueVehicleIdFromMqttTopic(apcData.topic);
+        if (mqttTopicSuffix === undefined) {
+          logger.warn(
+            { topic: apcData.topic },
+            "APC data has an unexpected topic format",
+          );
+        } else {
+          const mqttPayload: expandedApc.ExpandedApcMessage = transformPayload(
+            apcData.payload,
+          );
+          const encoded = Buffer.from(JSON.stringify(mqttPayload), "utf8");
+          result = {
+            data: encoded,
+            eventTimestamp: protobufMessage.getEventTimestamp(),
+            properties: {
+              "mqtt-topic": mqttTopicSuffix,
+            },
+          };
+        }
       }
     }
     return result;

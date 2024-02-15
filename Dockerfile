@@ -1,4 +1,4 @@
-FROM node:18-slim AS base
+FROM node:20-slim AS base
 
 ARG DEBIAN_FRONTEND=noninteractive
 
@@ -42,15 +42,17 @@ RUN npm run build
 
 # The base image should be the same as the base image of base. Yet using ARG for
 # the base image irritates hadolint and might break Dependabot.
-FROM node:18-slim AS production
+FROM node:20-slim AS production
 
 ARG DEBIAN_FRONTEND=noninteractive
 ENV NODE_ENV=production
 
+# curl is used as the health check client.
 RUN apt-get update \
   && apt-get upgrade -y \
   && apt-get -y --no-install-recommends install \
   'ca-certificates' \
+  'curl' \
   'tini' \
   && rm -rf /var/lib/apt/lists/*
 
