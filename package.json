@@ -56,7 +56,7 @@
     "long": "^5.2.1",
     "pino": "^8.0.0",
     "protobufjs": "^7.0.0",
-    "pulsar-client": "^1.8.1"
+    "pulsar-client": "^1.11.0"
   },
   "jest": {
     "preset": "ts-jest/presets/js-with-ts",
