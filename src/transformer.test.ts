@@ -3,21 +3,25 @@ import Pulsar from "pulsar-client";
 import * as expandedApc from "./quicktype/expandedApc";
 import { passengerCount } from "./protobuf/passengerCount";
 import {
-  getUniqueVehicleIdFromMqttTopic,
+  getVehicleModeAndUniqueVehicleIdFromMqttTopic,
   initializeTransformer,
   wrapDefined,
 } from "./transformer";
 
-describe("Get unique vehicle IDs", () => {
-  test("Get a unique vehicle ID from a valid MQTT topic", () => {
+describe("Get modes and unique vehicle IDs", () => {
+  test("Get the mode and the unique vehicle ID from a valid MQTT topic", () => {
     const mqttTopic = "/hfp/v2/journey/ongoing/apc/bus/0022/00758";
-    const uniqueVehicleId = "0022/00758";
-    expect(getUniqueVehicleIdFromMqttTopic(mqttTopic)).toBe(uniqueVehicleId);
+    const modeAndUniqueVehicleId = "bus/0022/00758";
+    expect(getVehicleModeAndUniqueVehicleIdFromMqttTopic(mqttTopic)).toBe(
+      modeAndUniqueVehicleId,
+    );
   });
 
-  test("Get undefined instead of a unique vehicle ID from an invalid MQTT topic", () => {
+  test("Get undefined instead of the mode and the unique vehicle ID from an invalid MQTT topic", () => {
     const mqttTopic = "/hfp/v2/journey/ongoing/foobar/0022/00758";
-    expect(getUniqueVehicleIdFromMqttTopic(mqttTopic)).toBeUndefined();
+    expect(
+      getVehicleModeAndUniqueVehicleIdFromMqttTopic(mqttTopic),
+    ).toBeUndefined();
   });
 });
 
@@ -150,7 +154,7 @@ describe("Transformer", () => {
         },
       },
       properties: {
-        "mqtt-topic": "0018/00817",
+        "mqtt-topic": "bus/0018/00817",
       },
       eventTimestamp: 1660731500000,
     });
@@ -236,7 +240,7 @@ describe("Transformer", () => {
         },
       },
       properties: {
-        "mqtt-topic": "0018/01028",
+        "mqtt-topic": "bus/0018/01028",
       },
       eventTimestamp: 1707664053746,
     });
@@ -314,7 +318,7 @@ describe("Transformer", () => {
         },
       },
       properties: {
-        "mqtt-topic": "0018/01028",
+        "mqtt-topic": "bus/0018/01028",
       },
       eventTimestamp: 1707664053746,
     });

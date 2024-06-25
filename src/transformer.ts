@@ -4,12 +4,12 @@ import type Pulsar from "pulsar-client";
 import type * as expandedApc from "./quicktype/expandedApc";
 import { passengerCount } from "./protobuf/passengerCount";
 
-export const getUniqueVehicleIdFromMqttTopic = (
+export const getVehicleModeAndUniqueVehicleIdFromMqttTopic = (
   topic: string,
 ): string | undefined => {
   const parts = topic.split("/");
   if (parts.length >= 9) {
-    return parts.slice(7, 9).join("/");
+    return parts.slice(6, 9).join("/");
   }
   return undefined;
 };
@@ -149,7 +149,9 @@ export const initializeTransformer = (
           "APC data is missing topic and thus the owning operator and its vehicle number",
         );
       } else {
-        const mqttTopicSuffix = getUniqueVehicleIdFromMqttTopic(apcData.topic);
+        const mqttTopicSuffix = getVehicleModeAndUniqueVehicleIdFromMqttTopic(
+          apcData.topic,
+        );
         if (mqttTopicSuffix === undefined) {
           logger.warn(
             { topic: apcData.topic },
