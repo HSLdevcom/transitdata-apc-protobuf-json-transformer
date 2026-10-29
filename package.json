@@ -9,11 +9,13 @@
     "build:expanded-apc": "mkdir -p ./src/quicktype && rm -f ./src/quicktype/expandedApc.ts && quicktype --out ./src/quicktype/expandedApc.ts --top-level ExpandedApcMessage --lang ts --src-lang json --src ./quicktype/expanded-apc --no-date-times --alphabetize-properties --all-properties-optional --telemetry disable --converters all-objects && prettier --write ./src/quicktype/expandedApc.ts && export TMPFILE=\"$(mktemp)\" && echo '// @ts-nocheck' > \"${TMPFILE}\" && cat ./src/quicktype/expandedApc.ts >> \"${TMPFILE}\" && mv \"${TMPFILE}\" ./src/quicktype/expandedApc.ts",
     "build:src": "rm -rf dist && tsc",
     "check-and-build": "npm run build:passenger-count && npm run build:expanded-apc && npm run ts:check && npm run prettier:check && npm run eslint && npm run test && npm run build",
+    "check-and-build:no-testcontainer-tests": "npm run build:passenger-count && npm run build:expanded-apc && npm run ts:check && npm run prettier:check && npm run eslint && npm run test:no-testcontainer-tests && npm run build",
     "eslint": "eslint . --ext .ts --max-warnings=0",
     "prettier": "prettier --write .",
     "prettier:check": "prettier --check .",
     "start": "node dist/index.js",
     "test": "jest",
+    "test:no-testcontainer-tests": "jest --testPathIgnorePatterns=\"./dist|\\.integration\\.test\\.ts$\"",
     "ts:check": "tsc --noEmit"
   },
   "repository": {
@@ -49,6 +51,7 @@
     "prettier": "^3.0.3",
     "protobufjs-cli": "^1.1.1",
     "quicktype": "^23.0.84",
+    "testcontainers": "^11.14.0",
     "ts-jest": "^29.0.5",
     "typescript": "^5.2.2"
   },

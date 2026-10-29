@@ -21,7 +21,7 @@ RUN npm ci
 
 FROM installer AS tester
 COPY --chown=node:node . .
-CMD ["npm", "run", "check-and-build"]
+CMD ["npm", "run", "check-and-build:no-testcontainer-tests"]
 
 
 
