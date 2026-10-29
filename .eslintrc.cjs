@@ -26,5 +26,17 @@ module.exports = {
     "import",
     "prettier",
   ],
-  rules: {},
+  rules: {
+    // Removed in @typescript-eslint v8; base ESLint rule still applies via airbnb-base
+    "@typescript-eslint/lines-between-class-members": "off",
+    // Renamed to only-throw-error in @typescript-eslint v8
+    "@typescript-eslint/no-throw-literal": "off",
+    "@typescript-eslint/only-throw-error": "error",
+    // @typescript-eslint v8 removed allowNumber from strict-type-checked default;
+    // restore it to match v7 behaviour and avoid noisy .toString() calls.
+    "@typescript-eslint/restrict-template-expressions": [
+      "error",
+      { allowNumber: true },
+    ],
+  },
 };

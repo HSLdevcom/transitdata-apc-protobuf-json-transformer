@@ -14,8 +14,8 @@
     "prettier": "prettier --write .",
     "prettier:check": "prettier --check .",
     "start": "node dist/index.js",
-    "test": "jest",
-    "test:no-testcontainer-tests": "jest --testPathIgnorePatterns=\"./dist|\\.integration\\.test\\.ts$\"",
+    "test": "JEST_JUNIT_CLASSNAME=\"{filepath}\" jest --coverage --reporters=jest-junit --reporters=default --forceExit",
+    "test:no-testcontainer-tests": "JEST_JUNIT_CLASSNAME=\"{filepath}\" jest --testPathIgnorePatterns=\"./dist|\\.integration\\.test\\.ts$\" --coverage --reporters=jest-junit --reporters=default --forceExit",
     "ts:check": "tsc --noEmit"
   },
   "repository": {
@@ -33,27 +33,28 @@
   },
   "homepage": "https://github.com/HSLdevcom/transitdata-apc-protobuf-json-transformer#readme",
   "devDependencies": {
-    "@tsconfig/node-lts": "^20.1.1",
+    "@tsconfig/node-lts": "^24.0.1",
     "@tsconfig/strictest": "^2.0.2",
     "@types/jest": "^29.0.0",
-    "@types/node": "^20.11.17",
-    "@typescript-eslint/eslint-plugin": "^6.21.0",
-    "@typescript-eslint/parser": "^6.21.0",
-    "eslint": "^8.6.0",
+    "@types/node": "^24.19.2",
+    "@typescript-eslint/eslint-plugin": "^8.72.1",
+    "@typescript-eslint/parser": "^8.72.1",
+    "eslint": "^8.57.1",
     "eslint-config-airbnb-base": "^15.0.0",
-    "eslint-config-airbnb-typescript": "^17.0.0",
+    "eslint-config-airbnb-typescript": "^18.0.0",
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-eslint-comments": "^3.2.0",
     "eslint-plugin-import": "^2.25.4",
-    "eslint-plugin-jest": "^27.0.0",
+    "eslint-plugin-jest": "^28.14.0",
     "eslint-plugin-prettier": "^5.0.1",
     "jest": "^29.0.0",
+    "jest-junit": "^16.0.0",
     "prettier": "^3.0.3",
     "protobufjs-cli": "^1.1.1",
     "quicktype": "^23.0.84",
     "testcontainers": "^11.14.0",
     "ts-jest": "^29.0.5",
-    "typescript": "^5.2.2"
+    "typescript": "^5.9.3"
   },
   "dependencies": {
     "long": "^5.2.1",
@@ -66,6 +67,20 @@
     "testEnvironment": "node",
     "testPathIgnorePatterns": [
       "./dist"
+    ],
+    "coveragePathIgnorePatterns": [
+      "/node_modules/",
+      "/src/protobuf/",
+      "/src/quicktype/"
     ]
+  },
+  "overrides": {
+    "eslint-config-airbnb-typescript": {
+      "@typescript-eslint/eslint-plugin": "^8.0.0",
+      "@typescript-eslint/parser": "^8.0.0"
+    },
+    "eslint-plugin-jest": {
+      "@typescript-eslint/eslint-plugin": "^8.0.0"
+    }
   }
 }
