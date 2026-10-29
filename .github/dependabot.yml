@@ -1,60 +1,131 @@
----
 version: 2
+multi-ecosystem-groups:
+  hsldevcom-infra:
+    schedule:
+      interval: "daily"
+    updates:
+      - package-ecosystem: "docker"
+        directory: "/"
+        patterns: ["hsldevcom/*"]
+        multi-ecosystem-group: "hsldevcom-infra"
+      - package-ecosystem: "github-actions"
+        directory: "/"
+        patterns: ["HSLdevcom/*"]
+        multi-ecosystem-group: "hsldevcom-infra"
 updates:
-  - package-ecosystem: "github-actions"
+  - package-ecosystem: "maven"
     directory: "/"
     schedule:
       interval: "daily"
+    open-pull-requests-limit: 20
+    cooldown:
+      default-days: 30
+      semver-major-days: 90
+      semver-minor-days: 60
+      semver-patch-days: 30
+    groups:
+      dev-all:
+        dependency-type: "development"
+        update-types:
+          - "major"
+          - "minor"
+          - "patch"
+      prod-minor-patch:
+        dependency-type: "production"
+        update-types:
+          - "minor"
+          - "patch"
+  - package-ecosystem: "gradle"
+    directory: "/"
+    schedule:
+      interval: "daily"
+    open-pull-requests-limit: 20
+    cooldown:
+      default-days: 30
+      semver-major-days: 90
+      semver-minor-days: 60
+      semver-patch-days: 30
+    groups:
+      dev-all:
+        dependency-type: "development"
+        update-types:
+          - "major"
+          - "minor"
+          - "patch"
+      prod-minor-patch:
+        dependency-type: "production"
+        update-types:
+          - "minor"
+          - "patch"
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "daily"
+    open-pull-requests-limit: 20
+    cooldown:
+      default-days: 30
+      semver-major-days: 90
+      semver-minor-days: 60
+      semver-patch-days: 30
+    groups:
+      dev-all:
+        dependency-type: "development"
+        update-types:
+          - "major"
+          - "minor"
+          - "patch"
+      prod-minor-patch:
+        dependency-type: "production"
+        update-types:
+          - "minor"
+          - "patch"
+  - package-ecosystem: "pip"
+    directory: "/"
+    schedule:
+      interval: "daily"
+    open-pull-requests-limit: 20
+    cooldown:
+      default-days: 30
+      semver-major-days: 90
+      semver-minor-days: 60
+      semver-patch-days: 30
+    groups:
+      dev-all:
+        dependency-type: "development"
+        update-types:
+          - "major"
+          - "minor"
+          - "patch"
+      prod-minor-patch:
+        dependency-type: "production"
+        update-types:
+          - "minor"
+          - "patch"
   - package-ecosystem: "docker"
     directory: "/"
     schedule:
       interval: "daily"
-  - package-ecosystem: "npm"
-    directory: "/"
     open-pull-requests-limit: 20
-    schedule:
-      interval: "weekly"
+    cooldown:
+      default-days: 30
+    ignore:
+      - dependency-name: "eclipse-temurin/*"
+        # Ignore non-LTS versions; extend as the release schedule evolves
+        versions: ["26", "27", "28", "30", "31", "32", "34", "35", "36"]
     groups:
-      date-fns:
-        patterns:
-          - "date-fns"
-          - "date-fns-tz"
-      eslint-config-airbnb:
-        patterns:
-          - "eslint-config-airbnb-base"
-          - "eslint-config-airbnb-typescript"
-      eslint-plugin-import:
-        patterns:
-          - "eslint-import-resolver-typescript"
-          - "eslint-plugin-import"
-      jest:
-        patterns:
-          - "@types/jest"
-          - "eslint-plugin-jest"
-          - "jest"
-          - "ts-jest"
-      libsodium-wrappers:
-        patterns:
-          - "@types/libsodium-wrappers"
-          - "libsodium-wrappers"
-      pg:
-        patterns:
-          - "@types/pg"
-          - "postgres-migrations"
-          - "pg"
-          - "pg-promise"
-      prettier:
-        patterns:
-          - "eslint-config-prettier"
-          - "eslint-plugin-prettier"
-          - "prettier"
-      protobuf:
-        patterns:
-          - "protobufjs"
-          - "protobufjs-cli"
-      tsconfig:
-        patterns:
-          - "@tsconfig/*"
-      typescript-eslint:
-        patterns:
-          - "@typescript-eslint/*"
+      docker-minor-patch:
+        update-types:
+          - "minor"
+          - "patch"
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "daily"
+    open-pull-requests-limit: 20
+    cooldown:
+      default-days: 30
+    groups:
+      actions-minor-patch:
+        update-types:
+          - "minor"
+          - "patch"

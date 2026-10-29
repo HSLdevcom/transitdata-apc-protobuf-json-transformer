@@ -39,7 +39,8 @@ export const passengerCount = ($root.passengerCount = (() => {
     function Data(properties) {
       if (properties)
         for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
-          if (properties[keys[i]] != null) this[keys[i]] = properties[keys[i]];
+          if (properties[keys[i]] != null && keys[i] !== "__proto__")
+            this[keys[i]] = properties[keys[i]];
     }
 
     /**
@@ -97,14 +98,17 @@ export const passengerCount = ($root.passengerCount = (() => {
      * @param {$protobuf.Writer} [writer] Writer to encode to
      * @returns {$protobuf.Writer} Writer
      */
-    Data.encode = function encode(message, writer) {
+    Data.encode = function encode(message, writer, q) {
       if (!writer) writer = $Writer.create();
+      if (q === undefined) q = 0;
+      if (q > $util.recursionLimit) throw Error("max depth exceeded");
       writer.uint32(/* id 1, wireType 0 =*/ 8).int32(message.SchemaVersion);
       if (message.topic != null && Object.hasOwnProperty.call(message, "topic"))
         writer.uint32(/* id 2, wireType 2 =*/ 18).string(message.topic);
       $root.passengerCount.Payload.encode(
         message.payload,
         writer.uint32(/* id 3, wireType 2 =*/ 26).fork(),
+        q + 1,
       ).ldelim();
       if (
         message.receivedAt != null &&
@@ -138,12 +142,23 @@ export const passengerCount = ($root.passengerCount = (() => {
      * @throws {Error} If the payload is not a reader or valid buffer
      * @throws {$protobuf.util.ProtocolError} If required fields are missing
      */
-    Data.decode = function decode(reader, length) {
+    Data.decode = function decode(reader, length, error, long) {
       if (!(reader instanceof $Reader)) reader = $Reader.create(reader);
-      let end = length === undefined ? reader.len : reader.pos + length,
-        message = new $root.passengerCount.Data();
+      if (long === undefined) long = 0;
+      if (long > $Reader.recursionLimit)
+        throw Error("maximum nesting depth exceeded");
+      let end, message;
+      if (length === undefined) end = reader.len;
+      else {
+        end = reader.pos + length;
+        if (end > reader.len) throw RangeError("index out of range");
+        length = reader.len;
+        reader.len = end;
+      }
+      message = new $root.passengerCount.Data();
       while (reader.pos < end) {
         let tag = reader.uint32();
+        if (tag === error) break;
         switch (tag >>> 3) {
           case 1: {
             message.SchemaVersion = reader.int32();
@@ -157,6 +172,8 @@ export const passengerCount = ($root.passengerCount = (() => {
             message.payload = $root.passengerCount.Payload.decode(
               reader,
               reader.uint32(),
+              undefined,
+              long + 1,
             );
             break;
           }
@@ -165,15 +182,19 @@ export const passengerCount = ($root.passengerCount = (() => {
             break;
           }
           default:
-            reader.skipType(tag & 7);
+            reader.skipType(tag & 7, long);
             break;
         }
       }
-      if (!message.hasOwnProperty("SchemaVersion"))
+      if (length !== undefined) {
+        if (reader.pos !== end) throw RangeError("index out of range");
+        reader.len = length;
+      }
+      if (!Object.hasOwnProperty.call(message, "SchemaVersion"))
         throw $util.ProtocolError("missing required 'SchemaVersion'", {
           instance: message,
         });
-      if (!message.hasOwnProperty("payload"))
+      if (!Object.hasOwnProperty.call(message, "payload"))
         throw $util.ProtocolError("missing required 'payload'", {
           instance: message,
         });
@@ -203,18 +224,26 @@ export const passengerCount = ($root.passengerCount = (() => {
      * @param {Object.<string,*>} message Plain object to verify
      * @returns {string|null} `null` if valid, otherwise the reason why it is not
      */
-    Data.verify = function verify(message) {
+    Data.verify = function verify(message, long) {
       if (typeof message !== "object" || message === null)
         return "object expected";
+      if (long === undefined) long = 0;
+      if (long > $util.recursionLimit) return "maximum nesting depth exceeded";
       if (!$util.isInteger(message.SchemaVersion))
         return "SchemaVersion: integer expected";
-      if (message.topic != null && message.hasOwnProperty("topic"))
+      if (message.topic != null && Object.hasOwnProperty.call(message, "topic"))
         if (!$util.isString(message.topic)) return "topic: string expected";
       {
-        let error = $root.passengerCount.Payload.verify(message.payload);
+        let error = $root.passengerCount.Payload.verify(
+          message.payload,
+          long + 1,
+        );
         if (error) return "payload." + error;
       }
-      if (message.receivedAt != null && message.hasOwnProperty("receivedAt"))
+      if (
+        message.receivedAt != null &&
+        Object.hasOwnProperty.call(message, "receivedAt")
+      )
         if (
           !$util.isInteger(message.receivedAt) &&
           !(
@@ -235,24 +264,28 @@ export const passengerCount = ($root.passengerCount = (() => {
      * @param {Object.<string,*>} object Plain object
      * @returns {passengerCount.Data} Data
      */
-    Data.fromObject = function fromObject(object) {
+    Data.fromObject = function fromObject(object, long) {
       if (object instanceof $root.passengerCount.Data) return object;
+      if (!$util.isObject(object))
+        throw TypeError(".passengerCount.Data: object expected");
+      if (long === undefined) long = 0;
+      if (long > $util.recursionLimit)
+        throw Error("maximum nesting depth exceeded");
       let message = new $root.passengerCount.Data();
       if (object.SchemaVersion != null)
         message.SchemaVersion = object.SchemaVersion | 0;
       if (object.topic != null) message.topic = String(object.topic);
       if (object.payload != null) {
-        if (typeof object.payload !== "object")
+        if (!$util.isObject(object.payload))
           throw TypeError(".passengerCount.Data.payload: object expected");
         message.payload = $root.passengerCount.Payload.fromObject(
           object.payload,
+          long + 1,
         );
       }
       if (object.receivedAt != null)
         if ($util.Long)
-          (message.receivedAt = $util.Long.fromValue(
-            object.receivedAt,
-          )).unsigned = false;
+          message.receivedAt = $util.Long.fromValue(object.receivedAt, false);
         else if (typeof object.receivedAt === "string")
           message.receivedAt = parseInt(object.receivedAt, 10);
         else if (typeof object.receivedAt === "number")
@@ -274,8 +307,10 @@ export const passengerCount = ($root.passengerCount = (() => {
      * @param {$protobuf.IConversionOptions} [options] Conversion options
      * @returns {Object.<string,*>} Plain object
      */
-    Data.toObject = function toObject(message, options) {
+    Data.toObject = function toObject(message, options, q) {
       if (!options) options = {};
+      if (q === undefined) q = 0;
+      if (q > $util.recursionLimit) throw Error("max depth exceeded");
       let object = {};
       if (options.defaults) {
         object.SchemaVersion = 1;
@@ -288,23 +323,47 @@ export const passengerCount = ($root.passengerCount = (() => {
               ? long.toString()
               : options.longs === Number
                 ? long.toNumber()
-                : long;
-        } else object.receivedAt = options.longs === String ? "0" : 0;
+                : typeof BigInt !== "undefined" && options.longs === BigInt
+                  ? long.toBigInt()
+                  : long;
+        } else
+          object.receivedAt =
+            options.longs === String
+              ? "0"
+              : typeof BigInt !== "undefined" && options.longs === BigInt
+                ? BigInt("0")
+                : 0;
       }
       if (
         message.SchemaVersion != null &&
-        message.hasOwnProperty("SchemaVersion")
+        Object.hasOwnProperty.call(message, "SchemaVersion")
       )
         object.SchemaVersion = message.SchemaVersion;
-      if (message.topic != null && message.hasOwnProperty("topic"))
+      if (message.topic != null && Object.hasOwnProperty.call(message, "topic"))
         object.topic = message.topic;
-      if (message.payload != null && message.hasOwnProperty("payload"))
+      if (
+        message.payload != null &&
+        Object.hasOwnProperty.call(message, "payload")
+      )
         object.payload = $root.passengerCount.Payload.toObject(
           message.payload,
           options,
+          q + 1,
         );
-      if (message.receivedAt != null && message.hasOwnProperty("receivedAt"))
-        if (typeof message.receivedAt === "number")
+      if (
+        message.receivedAt != null &&
+        Object.hasOwnProperty.call(message, "receivedAt")
+      )
+        if (typeof BigInt !== "undefined" && options.longs === BigInt)
+          object.receivedAt =
+            typeof message.receivedAt === "number"
+              ? BigInt(message.receivedAt)
+              : $util.Long.fromBits(
+                  message.receivedAt.low >>> 0,
+                  message.receivedAt.high >>> 0,
+                  false,
+                ).toBigInt();
+        else if (typeof message.receivedAt === "number")
           object.receivedAt =
             options.longs === String
               ? String(message.receivedAt)
@@ -386,7 +445,8 @@ export const passengerCount = ($root.passengerCount = (() => {
     function Payload(properties) {
       if (properties)
         for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
-          if (properties[keys[i]] != null) this[keys[i]] = properties[keys[i]];
+          if (properties[keys[i]] != null && keys[i] !== "__proto__")
+            this[keys[i]] = properties[keys[i]];
     }
 
     /**
@@ -546,8 +606,10 @@ export const passengerCount = ($root.passengerCount = (() => {
      * @param {$protobuf.Writer} [writer] Writer to encode to
      * @returns {$protobuf.Writer} Writer
      */
-    Payload.encode = function encode(message, writer) {
+    Payload.encode = function encode(message, writer, q) {
       if (!writer) writer = $Writer.create();
+      if (q === undefined) q = 0;
+      if (q > $util.recursionLimit) throw Error("max depth exceeded");
       if (message.desi != null && Object.hasOwnProperty.call(message, "desi"))
         writer.uint32(/* id 1, wireType 2 =*/ 10).string(message.desi);
       if (message.dir != null && Object.hasOwnProperty.call(message, "dir"))
@@ -587,6 +649,7 @@ export const passengerCount = ($root.passengerCount = (() => {
         $root.passengerCount.VehicleCounts.encode(
           message.vehicleCounts,
           writer.uint32(/* id 17, wireType 2 =*/ 138).fork(),
+          q + 1,
         ).ldelim();
       return writer;
     };
@@ -615,12 +678,23 @@ export const passengerCount = ($root.passengerCount = (() => {
      * @throws {Error} If the payload is not a reader or valid buffer
      * @throws {$protobuf.util.ProtocolError} If required fields are missing
      */
-    Payload.decode = function decode(reader, length) {
+    Payload.decode = function decode(reader, length, error, long) {
       if (!(reader instanceof $Reader)) reader = $Reader.create(reader);
-      let end = length === undefined ? reader.len : reader.pos + length,
-        message = new $root.passengerCount.Payload();
+      if (long === undefined) long = 0;
+      if (long > $Reader.recursionLimit)
+        throw Error("maximum nesting depth exceeded");
+      let end, message;
+      if (length === undefined) end = reader.len;
+      else {
+        end = reader.pos + length;
+        if (end > reader.len) throw RangeError("index out of range");
+        length = reader.len;
+        reader.len = end;
+      }
+      message = new $root.passengerCount.Payload();
       while (reader.pos < end) {
         let tag = reader.uint32();
+        if (tag === error) break;
         switch (tag >>> 3) {
           case 1: {
             message.desi = reader.string();
@@ -690,13 +764,19 @@ export const passengerCount = ($root.passengerCount = (() => {
             message.vehicleCounts = $root.passengerCount.VehicleCounts.decode(
               reader,
               reader.uint32(),
+              undefined,
+              long + 1,
             );
             break;
           }
           default:
-            reader.skipType(tag & 7);
+            reader.skipType(tag & 7, long);
             break;
         }
+      }
+      if (length !== undefined) {
+        if (reader.pos !== end) throw RangeError("index out of range");
+        reader.len = length;
       }
       return message;
     };
@@ -724,18 +804,20 @@ export const passengerCount = ($root.passengerCount = (() => {
      * @param {Object.<string,*>} message Plain object to verify
      * @returns {string|null} `null` if valid, otherwise the reason why it is not
      */
-    Payload.verify = function verify(message) {
+    Payload.verify = function verify(message, long) {
       if (typeof message !== "object" || message === null)
         return "object expected";
-      if (message.desi != null && message.hasOwnProperty("desi"))
+      if (long === undefined) long = 0;
+      if (long > $util.recursionLimit) return "maximum nesting depth exceeded";
+      if (message.desi != null && Object.hasOwnProperty.call(message, "desi"))
         if (!$util.isString(message.desi)) return "desi: string expected";
-      if (message.dir != null && message.hasOwnProperty("dir"))
+      if (message.dir != null && Object.hasOwnProperty.call(message, "dir"))
         if (!$util.isString(message.dir)) return "dir: string expected";
-      if (message.oper != null && message.hasOwnProperty("oper"))
+      if (message.oper != null && Object.hasOwnProperty.call(message, "oper"))
         if (!$util.isInteger(message.oper)) return "oper: integer expected";
-      if (message.veh != null && message.hasOwnProperty("veh"))
+      if (message.veh != null && Object.hasOwnProperty.call(message, "veh"))
         if (!$util.isInteger(message.veh)) return "veh: integer expected";
-      if (message.tst != null && message.hasOwnProperty("tst"))
+      if (message.tst != null && Object.hasOwnProperty.call(message, "tst"))
         if (
           !$util.isInteger(message.tst) &&
           !(
@@ -745,7 +827,7 @@ export const passengerCount = ($root.passengerCount = (() => {
           )
         )
           return "tst: integer|Long expected";
-      if (message.tsi != null && message.hasOwnProperty("tsi"))
+      if (message.tsi != null && Object.hasOwnProperty.call(message, "tsi"))
         if (
           !$util.isInteger(message.tsi) &&
           !(
@@ -755,32 +837,33 @@ export const passengerCount = ($root.passengerCount = (() => {
           )
         )
           return "tsi: integer|Long expected";
-      if (message.lat != null && message.hasOwnProperty("lat"))
+      if (message.lat != null && Object.hasOwnProperty.call(message, "lat"))
         if (typeof message.lat !== "number") return "lat: number expected";
-      if (message.long != null && message.hasOwnProperty("long"))
+      if (message.long != null && Object.hasOwnProperty.call(message, "long"))
         if (typeof message.long !== "number") return "long: number expected";
-      if (message.odo != null && message.hasOwnProperty("odo"))
+      if (message.odo != null && Object.hasOwnProperty.call(message, "odo"))
         if (typeof message.odo !== "number") return "odo: number expected";
-      if (message.oday != null && message.hasOwnProperty("oday"))
+      if (message.oday != null && Object.hasOwnProperty.call(message, "oday"))
         if (!$util.isString(message.oday)) return "oday: string expected";
-      if (message.jrn != null && message.hasOwnProperty("jrn"))
+      if (message.jrn != null && Object.hasOwnProperty.call(message, "jrn"))
         if (!$util.isInteger(message.jrn)) return "jrn: integer expected";
-      if (message.line != null && message.hasOwnProperty("line"))
+      if (message.line != null && Object.hasOwnProperty.call(message, "line"))
         if (!$util.isInteger(message.line)) return "line: integer expected";
-      if (message.start != null && message.hasOwnProperty("start"))
+      if (message.start != null && Object.hasOwnProperty.call(message, "start"))
         if (!$util.isString(message.start)) return "start: string expected";
-      if (message.loc != null && message.hasOwnProperty("loc"))
+      if (message.loc != null && Object.hasOwnProperty.call(message, "loc"))
         if (!$util.isString(message.loc)) return "loc: string expected";
-      if (message.stop != null && message.hasOwnProperty("stop"))
+      if (message.stop != null && Object.hasOwnProperty.call(message, "stop"))
         if (!$util.isInteger(message.stop)) return "stop: integer expected";
-      if (message.route != null && message.hasOwnProperty("route"))
+      if (message.route != null && Object.hasOwnProperty.call(message, "route"))
         if (!$util.isString(message.route)) return "route: string expected";
       if (
         message.vehicleCounts != null &&
-        message.hasOwnProperty("vehicleCounts")
+        Object.hasOwnProperty.call(message, "vehicleCounts")
       ) {
         let error = $root.passengerCount.VehicleCounts.verify(
           message.vehicleCounts,
+          long + 1,
         );
         if (error) return "vehicleCounts." + error;
       }
@@ -795,16 +878,20 @@ export const passengerCount = ($root.passengerCount = (() => {
      * @param {Object.<string,*>} object Plain object
      * @returns {passengerCount.Payload} Payload
      */
-    Payload.fromObject = function fromObject(object) {
+    Payload.fromObject = function fromObject(object, long) {
       if (object instanceof $root.passengerCount.Payload) return object;
+      if (!$util.isObject(object))
+        throw TypeError(".passengerCount.Payload: object expected");
+      if (long === undefined) long = 0;
+      if (long > $util.recursionLimit)
+        throw Error("maximum nesting depth exceeded");
       let message = new $root.passengerCount.Payload();
       if (object.desi != null) message.desi = String(object.desi);
       if (object.dir != null) message.dir = String(object.dir);
       if (object.oper != null) message.oper = object.oper | 0;
       if (object.veh != null) message.veh = object.veh | 0;
       if (object.tst != null)
-        if ($util.Long)
-          (message.tst = $util.Long.fromValue(object.tst)).unsigned = false;
+        if ($util.Long) message.tst = $util.Long.fromValue(object.tst, false);
         else if (typeof object.tst === "string")
           message.tst = parseInt(object.tst, 10);
         else if (typeof object.tst === "number") message.tst = object.tst;
@@ -814,8 +901,7 @@ export const passengerCount = ($root.passengerCount = (() => {
             object.tst.high >>> 0,
           ).toNumber();
       if (object.tsi != null)
-        if ($util.Long)
-          (message.tsi = $util.Long.fromValue(object.tsi)).unsigned = false;
+        if ($util.Long) message.tsi = $util.Long.fromValue(object.tsi, false);
         else if (typeof object.tsi === "string")
           message.tsi = parseInt(object.tsi, 10);
         else if (typeof object.tsi === "number") message.tsi = object.tsi;
@@ -835,12 +921,13 @@ export const passengerCount = ($root.passengerCount = (() => {
       if (object.stop != null) message.stop = object.stop | 0;
       if (object.route != null) message.route = String(object.route);
       if (object.vehicleCounts != null) {
-        if (typeof object.vehicleCounts !== "object")
+        if (!$util.isObject(object.vehicleCounts))
           throw TypeError(
             ".passengerCount.Payload.vehicleCounts: object expected",
           );
         message.vehicleCounts = $root.passengerCount.VehicleCounts.fromObject(
           object.vehicleCounts,
+          long + 1,
         );
       }
       return message;
@@ -855,8 +942,10 @@ export const passengerCount = ($root.passengerCount = (() => {
      * @param {$protobuf.IConversionOptions} [options] Conversion options
      * @returns {Object.<string,*>} Plain object
      */
-    Payload.toObject = function toObject(message, options) {
+    Payload.toObject = function toObject(message, options, q) {
       if (!options) options = {};
+      if (q === undefined) q = 0;
+      if (q > $util.recursionLimit) throw Error("max depth exceeded");
       let object = {};
       if (options.defaults) {
         object.desi = "";
@@ -870,8 +959,16 @@ export const passengerCount = ($root.passengerCount = (() => {
               ? long.toString()
               : options.longs === Number
                 ? long.toNumber()
-                : long;
-        } else object.tst = options.longs === String ? "0" : 0;
+                : typeof BigInt !== "undefined" && options.longs === BigInt
+                  ? long.toBigInt()
+                  : long;
+        } else
+          object.tst =
+            options.longs === String
+              ? "0"
+              : typeof BigInt !== "undefined" && options.longs === BigInt
+                ? BigInt("0")
+                : 0;
         if ($util.Long) {
           let long = new $util.Long(0, 0, false);
           object.tsi =
@@ -879,8 +976,16 @@ export const passengerCount = ($root.passengerCount = (() => {
               ? long.toString()
               : options.longs === Number
                 ? long.toNumber()
-                : long;
-        } else object.tsi = options.longs === String ? "0" : 0;
+                : typeof BigInt !== "undefined" && options.longs === BigInt
+                  ? long.toBigInt()
+                  : long;
+        } else
+          object.tsi =
+            options.longs === String
+              ? "0"
+              : typeof BigInt !== "undefined" && options.longs === BigInt
+                ? BigInt("0")
+                : 0;
         object.lat = 0;
         object.long = 0;
         object.odo = 0;
@@ -893,16 +998,25 @@ export const passengerCount = ($root.passengerCount = (() => {
         object.route = "";
         object.vehicleCounts = null;
       }
-      if (message.desi != null && message.hasOwnProperty("desi"))
+      if (message.desi != null && Object.hasOwnProperty.call(message, "desi"))
         object.desi = message.desi;
-      if (message.dir != null && message.hasOwnProperty("dir"))
+      if (message.dir != null && Object.hasOwnProperty.call(message, "dir"))
         object.dir = message.dir;
-      if (message.oper != null && message.hasOwnProperty("oper"))
+      if (message.oper != null && Object.hasOwnProperty.call(message, "oper"))
         object.oper = message.oper;
-      if (message.veh != null && message.hasOwnProperty("veh"))
+      if (message.veh != null && Object.hasOwnProperty.call(message, "veh"))
         object.veh = message.veh;
-      if (message.tst != null && message.hasOwnProperty("tst"))
-        if (typeof message.tst === "number")
+      if (message.tst != null && Object.hasOwnProperty.call(message, "tst"))
+        if (typeof BigInt !== "undefined" && options.longs === BigInt)
+          object.tst =
+            typeof message.tst === "number"
+              ? BigInt(message.tst)
+              : $util.Long.fromBits(
+                  message.tst.low >>> 0,
+                  message.tst.high >>> 0,
+                  false,
+                ).toBigInt();
+        else if (typeof message.tst === "number")
           object.tst =
             options.longs === String ? String(message.tst) : message.tst;
         else
@@ -915,8 +1029,17 @@ export const passengerCount = ($root.passengerCount = (() => {
                     message.tst.high >>> 0,
                   ).toNumber()
                 : message.tst;
-      if (message.tsi != null && message.hasOwnProperty("tsi"))
-        if (typeof message.tsi === "number")
+      if (message.tsi != null && Object.hasOwnProperty.call(message, "tsi"))
+        if (typeof BigInt !== "undefined" && options.longs === BigInt)
+          object.tsi =
+            typeof message.tsi === "number"
+              ? BigInt(message.tsi)
+              : $util.Long.fromBits(
+                  message.tsi.low >>> 0,
+                  message.tsi.high >>> 0,
+                  false,
+                ).toBigInt();
+        else if (typeof message.tsi === "number")
           object.tsi =
             options.longs === String ? String(message.tsi) : message.tsi;
         else
@@ -929,42 +1052,43 @@ export const passengerCount = ($root.passengerCount = (() => {
                     message.tsi.high >>> 0,
                   ).toNumber()
                 : message.tsi;
-      if (message.lat != null && message.hasOwnProperty("lat"))
+      if (message.lat != null && Object.hasOwnProperty.call(message, "lat"))
         object.lat =
           options.json && !isFinite(message.lat)
             ? String(message.lat)
             : message.lat;
-      if (message.long != null && message.hasOwnProperty("long"))
+      if (message.long != null && Object.hasOwnProperty.call(message, "long"))
         object.long =
           options.json && !isFinite(message.long)
             ? String(message.long)
             : message.long;
-      if (message.odo != null && message.hasOwnProperty("odo"))
+      if (message.odo != null && Object.hasOwnProperty.call(message, "odo"))
         object.odo =
           options.json && !isFinite(message.odo)
             ? String(message.odo)
             : message.odo;
-      if (message.oday != null && message.hasOwnProperty("oday"))
+      if (message.oday != null && Object.hasOwnProperty.call(message, "oday"))
         object.oday = message.oday;
-      if (message.jrn != null && message.hasOwnProperty("jrn"))
+      if (message.jrn != null && Object.hasOwnProperty.call(message, "jrn"))
         object.jrn = message.jrn;
-      if (message.line != null && message.hasOwnProperty("line"))
+      if (message.line != null && Object.hasOwnProperty.call(message, "line"))
         object.line = message.line;
-      if (message.start != null && message.hasOwnProperty("start"))
+      if (message.start != null && Object.hasOwnProperty.call(message, "start"))
         object.start = message.start;
-      if (message.loc != null && message.hasOwnProperty("loc"))
+      if (message.loc != null && Object.hasOwnProperty.call(message, "loc"))
         object.loc = message.loc;
-      if (message.stop != null && message.hasOwnProperty("stop"))
+      if (message.stop != null && Object.hasOwnProperty.call(message, "stop"))
         object.stop = message.stop;
-      if (message.route != null && message.hasOwnProperty("route"))
+      if (message.route != null && Object.hasOwnProperty.call(message, "route"))
         object.route = message.route;
       if (
         message.vehicleCounts != null &&
-        message.hasOwnProperty("vehicleCounts")
+        Object.hasOwnProperty.call(message, "vehicleCounts")
       )
         object.vehicleCounts = $root.passengerCount.VehicleCounts.toObject(
           message.vehicleCounts,
           options,
+          q + 1,
         );
       return object;
     };
@@ -1022,7 +1146,8 @@ export const passengerCount = ($root.passengerCount = (() => {
       this.doorCounts = [];
       if (properties)
         for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
-          if (properties[keys[i]] != null) this[keys[i]] = properties[keys[i]];
+          if (properties[keys[i]] != null && keys[i] !== "__proto__")
+            this[keys[i]] = properties[keys[i]];
     }
 
     /**
@@ -1086,8 +1211,10 @@ export const passengerCount = ($root.passengerCount = (() => {
      * @param {$protobuf.Writer} [writer] Writer to encode to
      * @returns {$protobuf.Writer} Writer
      */
-    VehicleCounts.encode = function encode(message, writer) {
+    VehicleCounts.encode = function encode(message, writer, q) {
       if (!writer) writer = $Writer.create();
+      if (q === undefined) q = 0;
+      if (q > $util.recursionLimit) throw Error("max depth exceeded");
       if (
         message.countQuality != null &&
         Object.hasOwnProperty.call(message, "countQuality")
@@ -1110,6 +1237,7 @@ export const passengerCount = ($root.passengerCount = (() => {
           $root.passengerCount.DoorCount.encode(
             message.doorCounts[i],
             writer.uint32(/* id 4, wireType 2 =*/ 34).fork(),
+            q + 1,
           ).ldelim();
       if (
         message.extensions != null &&
@@ -1143,12 +1271,23 @@ export const passengerCount = ($root.passengerCount = (() => {
      * @throws {Error} If the payload is not a reader or valid buffer
      * @throws {$protobuf.util.ProtocolError} If required fields are missing
      */
-    VehicleCounts.decode = function decode(reader, length) {
+    VehicleCounts.decode = function decode(reader, length, error, long) {
       if (!(reader instanceof $Reader)) reader = $Reader.create(reader);
-      let end = length === undefined ? reader.len : reader.pos + length,
-        message = new $root.passengerCount.VehicleCounts();
+      if (long === undefined) long = 0;
+      if (long > $Reader.recursionLimit)
+        throw Error("maximum nesting depth exceeded");
+      let end, message;
+      if (length === undefined) end = reader.len;
+      else {
+        end = reader.pos + length;
+        if (end > reader.len) throw RangeError("index out of range");
+        length = reader.len;
+        reader.len = end;
+      }
+      message = new $root.passengerCount.VehicleCounts();
       while (reader.pos < end) {
         let tag = reader.uint32();
+        if (tag === error) break;
         switch (tag >>> 3) {
           case 1: {
             message.countQuality = reader.string();
@@ -1166,7 +1305,12 @@ export const passengerCount = ($root.passengerCount = (() => {
             if (!(message.doorCounts && message.doorCounts.length))
               message.doorCounts = [];
             message.doorCounts.push(
-              $root.passengerCount.DoorCount.decode(reader, reader.uint32()),
+              $root.passengerCount.DoorCount.decode(
+                reader,
+                reader.uint32(),
+                undefined,
+                long + 1,
+              ),
             );
             break;
           }
@@ -1175,9 +1319,13 @@ export const passengerCount = ($root.passengerCount = (() => {
             break;
           }
           default:
-            reader.skipType(tag & 7);
+            reader.skipType(tag & 7, long);
             break;
         }
+      }
+      if (length !== undefined) {
+        if (reader.pos !== end) throw RangeError("index out of range");
+        reader.len = length;
       }
       return message;
     };
@@ -1205,35 +1353,47 @@ export const passengerCount = ($root.passengerCount = (() => {
      * @param {Object.<string,*>} message Plain object to verify
      * @returns {string|null} `null` if valid, otherwise the reason why it is not
      */
-    VehicleCounts.verify = function verify(message) {
+    VehicleCounts.verify = function verify(message, long) {
       if (typeof message !== "object" || message === null)
         return "object expected";
+      if (long === undefined) long = 0;
+      if (long > $util.recursionLimit) return "maximum nesting depth exceeded";
       if (
         message.countQuality != null &&
-        message.hasOwnProperty("countQuality")
+        Object.hasOwnProperty.call(message, "countQuality")
       )
         if (!$util.isString(message.countQuality))
           return "countQuality: string expected";
-      if (message.vehicleLoad != null && message.hasOwnProperty("vehicleLoad"))
+      if (
+        message.vehicleLoad != null &&
+        Object.hasOwnProperty.call(message, "vehicleLoad")
+      )
         if (!$util.isInteger(message.vehicleLoad))
           return "vehicleLoad: integer expected";
       if (
         message.vehicleLoadRatio != null &&
-        message.hasOwnProperty("vehicleLoadRatio")
+        Object.hasOwnProperty.call(message, "vehicleLoadRatio")
       )
         if (typeof message.vehicleLoadRatio !== "number")
           return "vehicleLoadRatio: number expected";
-      if (message.doorCounts != null && message.hasOwnProperty("doorCounts")) {
+      if (
+        message.doorCounts != null &&
+        Object.hasOwnProperty.call(message, "doorCounts")
+      ) {
         if (!Array.isArray(message.doorCounts))
           return "doorCounts: array expected";
         for (let i = 0; i < message.doorCounts.length; ++i) {
           let error = $root.passengerCount.DoorCount.verify(
             message.doorCounts[i],
+            long + 1,
           );
           if (error) return "doorCounts." + error;
         }
       }
-      if (message.extensions != null && message.hasOwnProperty("extensions"))
+      if (
+        message.extensions != null &&
+        Object.hasOwnProperty.call(message, "extensions")
+      )
         if (!$util.isString(message.extensions))
           return "extensions: string expected";
       return null;
@@ -1247,8 +1407,13 @@ export const passengerCount = ($root.passengerCount = (() => {
      * @param {Object.<string,*>} object Plain object
      * @returns {passengerCount.VehicleCounts} VehicleCounts
      */
-    VehicleCounts.fromObject = function fromObject(object) {
+    VehicleCounts.fromObject = function fromObject(object, long) {
       if (object instanceof $root.passengerCount.VehicleCounts) return object;
+      if (!$util.isObject(object))
+        throw TypeError(".passengerCount.VehicleCounts: object expected");
+      if (long === undefined) long = 0;
+      if (long > $util.recursionLimit)
+        throw Error("maximum nesting depth exceeded");
       let message = new $root.passengerCount.VehicleCounts();
       if (object.countQuality != null)
         message.countQuality = String(object.countQuality);
@@ -1263,12 +1428,13 @@ export const passengerCount = ($root.passengerCount = (() => {
           );
         message.doorCounts = [];
         for (let i = 0; i < object.doorCounts.length; ++i) {
-          if (typeof object.doorCounts[i] !== "object")
+          if (!$util.isObject(object.doorCounts[i]))
             throw TypeError(
               ".passengerCount.VehicleCounts.doorCounts: object expected",
             );
           message.doorCounts[i] = $root.passengerCount.DoorCount.fromObject(
             object.doorCounts[i],
+            long + 1,
           );
         }
       }
@@ -1286,8 +1452,10 @@ export const passengerCount = ($root.passengerCount = (() => {
      * @param {$protobuf.IConversionOptions} [options] Conversion options
      * @returns {Object.<string,*>} Plain object
      */
-    VehicleCounts.toObject = function toObject(message, options) {
+    VehicleCounts.toObject = function toObject(message, options, q) {
       if (!options) options = {};
+      if (q === undefined) q = 0;
+      if (q > $util.recursionLimit) throw Error("max depth exceeded");
       let object = {};
       if (options.arrays || options.defaults) object.doorCounts = [];
       if (options.defaults) {
@@ -1298,14 +1466,17 @@ export const passengerCount = ($root.passengerCount = (() => {
       }
       if (
         message.countQuality != null &&
-        message.hasOwnProperty("countQuality")
+        Object.hasOwnProperty.call(message, "countQuality")
       )
         object.countQuality = message.countQuality;
-      if (message.vehicleLoad != null && message.hasOwnProperty("vehicleLoad"))
+      if (
+        message.vehicleLoad != null &&
+        Object.hasOwnProperty.call(message, "vehicleLoad")
+      )
         object.vehicleLoad = message.vehicleLoad;
       if (
         message.vehicleLoadRatio != null &&
-        message.hasOwnProperty("vehicleLoadRatio")
+        Object.hasOwnProperty.call(message, "vehicleLoadRatio")
       )
         object.vehicleLoadRatio =
           options.json && !isFinite(message.vehicleLoadRatio)
@@ -1317,9 +1488,13 @@ export const passengerCount = ($root.passengerCount = (() => {
           object.doorCounts[j] = $root.passengerCount.DoorCount.toObject(
             message.doorCounts[j],
             options,
+            q + 1,
           );
       }
-      if (message.extensions != null && message.hasOwnProperty("extensions"))
+      if (
+        message.extensions != null &&
+        Object.hasOwnProperty.call(message, "extensions")
+      )
         object.extensions = message.extensions;
       return object;
     };
@@ -1374,7 +1549,8 @@ export const passengerCount = ($root.passengerCount = (() => {
       this.count = [];
       if (properties)
         for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
-          if (properties[keys[i]] != null) this[keys[i]] = properties[keys[i]];
+          if (properties[keys[i]] != null && keys[i] !== "__proto__")
+            this[keys[i]] = properties[keys[i]];
     }
 
     /**
@@ -1414,8 +1590,10 @@ export const passengerCount = ($root.passengerCount = (() => {
      * @param {$protobuf.Writer} [writer] Writer to encode to
      * @returns {$protobuf.Writer} Writer
      */
-    DoorCount.encode = function encode(message, writer) {
+    DoorCount.encode = function encode(message, writer, q) {
       if (!writer) writer = $Writer.create();
+      if (q === undefined) q = 0;
+      if (q > $util.recursionLimit) throw Error("max depth exceeded");
       if (message.door != null && Object.hasOwnProperty.call(message, "door"))
         writer.uint32(/* id 1, wireType 2 =*/ 10).string(message.door);
       if (message.count != null && message.count.length)
@@ -1423,6 +1601,7 @@ export const passengerCount = ($root.passengerCount = (() => {
           $root.passengerCount.Count.encode(
             message.count[i],
             writer.uint32(/* id 2, wireType 2 =*/ 18).fork(),
+            q + 1,
           ).ldelim();
       return writer;
     };
@@ -1451,12 +1630,23 @@ export const passengerCount = ($root.passengerCount = (() => {
      * @throws {Error} If the payload is not a reader or valid buffer
      * @throws {$protobuf.util.ProtocolError} If required fields are missing
      */
-    DoorCount.decode = function decode(reader, length) {
+    DoorCount.decode = function decode(reader, length, error, long) {
       if (!(reader instanceof $Reader)) reader = $Reader.create(reader);
-      let end = length === undefined ? reader.len : reader.pos + length,
-        message = new $root.passengerCount.DoorCount();
+      if (long === undefined) long = 0;
+      if (long > $Reader.recursionLimit)
+        throw Error("maximum nesting depth exceeded");
+      let end, message;
+      if (length === undefined) end = reader.len;
+      else {
+        end = reader.pos + length;
+        if (end > reader.len) throw RangeError("index out of range");
+        length = reader.len;
+        reader.len = end;
+      }
+      message = new $root.passengerCount.DoorCount();
       while (reader.pos < end) {
         let tag = reader.uint32();
+        if (tag === error) break;
         switch (tag >>> 3) {
           case 1: {
             message.door = reader.string();
@@ -1465,14 +1655,23 @@ export const passengerCount = ($root.passengerCount = (() => {
           case 2: {
             if (!(message.count && message.count.length)) message.count = [];
             message.count.push(
-              $root.passengerCount.Count.decode(reader, reader.uint32()),
+              $root.passengerCount.Count.decode(
+                reader,
+                reader.uint32(),
+                undefined,
+                long + 1,
+              ),
             );
             break;
           }
           default:
-            reader.skipType(tag & 7);
+            reader.skipType(tag & 7, long);
             break;
         }
+      }
+      if (length !== undefined) {
+        if (reader.pos !== end) throw RangeError("index out of range");
+        reader.len = length;
       }
       return message;
     };
@@ -1500,15 +1699,23 @@ export const passengerCount = ($root.passengerCount = (() => {
      * @param {Object.<string,*>} message Plain object to verify
      * @returns {string|null} `null` if valid, otherwise the reason why it is not
      */
-    DoorCount.verify = function verify(message) {
+    DoorCount.verify = function verify(message, long) {
       if (typeof message !== "object" || message === null)
         return "object expected";
-      if (message.door != null && message.hasOwnProperty("door"))
+      if (long === undefined) long = 0;
+      if (long > $util.recursionLimit) return "maximum nesting depth exceeded";
+      if (message.door != null && Object.hasOwnProperty.call(message, "door"))
         if (!$util.isString(message.door)) return "door: string expected";
-      if (message.count != null && message.hasOwnProperty("count")) {
+      if (
+        message.count != null &&
+        Object.hasOwnProperty.call(message, "count")
+      ) {
         if (!Array.isArray(message.count)) return "count: array expected";
         for (let i = 0; i < message.count.length; ++i) {
-          let error = $root.passengerCount.Count.verify(message.count[i]);
+          let error = $root.passengerCount.Count.verify(
+            message.count[i],
+            long + 1,
+          );
           if (error) return "count." + error;
         }
       }
@@ -1523,8 +1730,13 @@ export const passengerCount = ($root.passengerCount = (() => {
      * @param {Object.<string,*>} object Plain object
      * @returns {passengerCount.DoorCount} DoorCount
      */
-    DoorCount.fromObject = function fromObject(object) {
+    DoorCount.fromObject = function fromObject(object, long) {
       if (object instanceof $root.passengerCount.DoorCount) return object;
+      if (!$util.isObject(object))
+        throw TypeError(".passengerCount.DoorCount: object expected");
+      if (long === undefined) long = 0;
+      if (long > $util.recursionLimit)
+        throw Error("maximum nesting depth exceeded");
       let message = new $root.passengerCount.DoorCount();
       if (object.door != null) message.door = String(object.door);
       if (object.count) {
@@ -1532,10 +1744,11 @@ export const passengerCount = ($root.passengerCount = (() => {
           throw TypeError(".passengerCount.DoorCount.count: array expected");
         message.count = [];
         for (let i = 0; i < object.count.length; ++i) {
-          if (typeof object.count[i] !== "object")
+          if (!$util.isObject(object.count[i]))
             throw TypeError(".passengerCount.DoorCount.count: object expected");
           message.count[i] = $root.passengerCount.Count.fromObject(
             object.count[i],
+            long + 1,
           );
         }
       }
@@ -1551,12 +1764,14 @@ export const passengerCount = ($root.passengerCount = (() => {
      * @param {$protobuf.IConversionOptions} [options] Conversion options
      * @returns {Object.<string,*>} Plain object
      */
-    DoorCount.toObject = function toObject(message, options) {
+    DoorCount.toObject = function toObject(message, options, q) {
       if (!options) options = {};
+      if (q === undefined) q = 0;
+      if (q > $util.recursionLimit) throw Error("max depth exceeded");
       let object = {};
       if (options.arrays || options.defaults) object.count = [];
       if (options.defaults) object.door = "";
-      if (message.door != null && message.hasOwnProperty("door"))
+      if (message.door != null && Object.hasOwnProperty.call(message, "door"))
         object.door = message.door;
       if (message.count && message.count.length) {
         object.count = [];
@@ -1564,6 +1779,7 @@ export const passengerCount = ($root.passengerCount = (() => {
           object.count[j] = $root.passengerCount.Count.toObject(
             message.count[j],
             options,
+            q + 1,
           );
       }
       return object;
@@ -1619,7 +1835,8 @@ export const passengerCount = ($root.passengerCount = (() => {
     function Count(properties) {
       if (properties)
         for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
-          if (properties[keys[i]] != null) this[keys[i]] = properties[keys[i]];
+          if (properties[keys[i]] != null && keys[i] !== "__proto__")
+            this[keys[i]] = properties[keys[i]];
     }
 
     /**
@@ -1667,8 +1884,10 @@ export const passengerCount = ($root.passengerCount = (() => {
      * @param {$protobuf.Writer} [writer] Writer to encode to
      * @returns {$protobuf.Writer} Writer
      */
-    Count.encode = function encode(message, writer) {
+    Count.encode = function encode(message, writer, q) {
       if (!writer) writer = $Writer.create();
+      if (q === undefined) q = 0;
+      if (q > $util.recursionLimit) throw Error("max depth exceeded");
       if (message.clazz != null && Object.hasOwnProperty.call(message, "clazz"))
         writer.uint32(/* id 1, wireType 2 =*/ 10).string(message.clazz);
       if (message["in"] != null && Object.hasOwnProperty.call(message, "in"))
@@ -1702,12 +1921,23 @@ export const passengerCount = ($root.passengerCount = (() => {
      * @throws {Error} If the payload is not a reader or valid buffer
      * @throws {$protobuf.util.ProtocolError} If required fields are missing
      */
-    Count.decode = function decode(reader, length) {
+    Count.decode = function decode(reader, length, error, long) {
       if (!(reader instanceof $Reader)) reader = $Reader.create(reader);
-      let end = length === undefined ? reader.len : reader.pos + length,
-        message = new $root.passengerCount.Count();
+      if (long === undefined) long = 0;
+      if (long > $Reader.recursionLimit)
+        throw Error("maximum nesting depth exceeded");
+      let end, message;
+      if (length === undefined) end = reader.len;
+      else {
+        end = reader.pos + length;
+        if (end > reader.len) throw RangeError("index out of range");
+        length = reader.len;
+        reader.len = end;
+      }
+      message = new $root.passengerCount.Count();
       while (reader.pos < end) {
         let tag = reader.uint32();
+        if (tag === error) break;
         switch (tag >>> 3) {
           case 1: {
             message.clazz = reader.string();
@@ -1722,9 +1952,13 @@ export const passengerCount = ($root.passengerCount = (() => {
             break;
           }
           default:
-            reader.skipType(tag & 7);
+            reader.skipType(tag & 7, long);
             break;
         }
+      }
+      if (length !== undefined) {
+        if (reader.pos !== end) throw RangeError("index out of range");
+        reader.len = length;
       }
       return message;
     };
@@ -1752,14 +1986,16 @@ export const passengerCount = ($root.passengerCount = (() => {
      * @param {Object.<string,*>} message Plain object to verify
      * @returns {string|null} `null` if valid, otherwise the reason why it is not
      */
-    Count.verify = function verify(message) {
+    Count.verify = function verify(message, long) {
       if (typeof message !== "object" || message === null)
         return "object expected";
-      if (message.clazz != null && message.hasOwnProperty("clazz"))
+      if (long === undefined) long = 0;
+      if (long > $util.recursionLimit) return "maximum nesting depth exceeded";
+      if (message.clazz != null && Object.hasOwnProperty.call(message, "clazz"))
         if (!$util.isString(message.clazz)) return "clazz: string expected";
-      if (message["in"] != null && message.hasOwnProperty("in"))
+      if (message["in"] != null && Object.hasOwnProperty.call(message, "in"))
         if (!$util.isInteger(message["in"])) return "in: integer expected";
-      if (message.out != null && message.hasOwnProperty("out"))
+      if (message.out != null && Object.hasOwnProperty.call(message, "out"))
         if (!$util.isInteger(message.out)) return "out: integer expected";
       return null;
     };
@@ -1772,8 +2008,13 @@ export const passengerCount = ($root.passengerCount = (() => {
      * @param {Object.<string,*>} object Plain object
      * @returns {passengerCount.Count} Count
      */
-    Count.fromObject = function fromObject(object) {
+    Count.fromObject = function fromObject(object, long) {
       if (object instanceof $root.passengerCount.Count) return object;
+      if (!$util.isObject(object))
+        throw TypeError(".passengerCount.Count: object expected");
+      if (long === undefined) long = 0;
+      if (long > $util.recursionLimit)
+        throw Error("maximum nesting depth exceeded");
       let message = new $root.passengerCount.Count();
       if (object.clazz != null) message.clazz = String(object.clazz);
       if (object["in"] != null) message["in"] = object["in"] | 0;
@@ -1790,19 +2031,21 @@ export const passengerCount = ($root.passengerCount = (() => {
      * @param {$protobuf.IConversionOptions} [options] Conversion options
      * @returns {Object.<string,*>} Plain object
      */
-    Count.toObject = function toObject(message, options) {
+    Count.toObject = function toObject(message, options, q) {
       if (!options) options = {};
+      if (q === undefined) q = 0;
+      if (q > $util.recursionLimit) throw Error("max depth exceeded");
       let object = {};
       if (options.defaults) {
         object.clazz = "";
         object["in"] = 0;
         object.out = 0;
       }
-      if (message.clazz != null && message.hasOwnProperty("clazz"))
+      if (message.clazz != null && Object.hasOwnProperty.call(message, "clazz"))
         object.clazz = message.clazz;
-      if (message["in"] != null && message.hasOwnProperty("in"))
+      if (message["in"] != null && Object.hasOwnProperty.call(message, "in"))
         object["in"] = message["in"];
-      if (message.out != null && message.hasOwnProperty("out"))
+      if (message.out != null && Object.hasOwnProperty.call(message, "out"))
         object.out = message.out;
       return object;
     };
