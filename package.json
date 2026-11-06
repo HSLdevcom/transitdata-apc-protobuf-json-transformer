@@ -58,7 +58,7 @@
   },
   "dependencies": {
     "long": "^5.2.1",
-    "pino": "^8.0.0",
+    "pino": "^10.3.1",
     "protobufjs": "^7.0.0",
     "pulsar-client": "^1.18.0"
   },
