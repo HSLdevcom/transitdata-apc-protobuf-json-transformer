@@ -337,3 +337,86 @@ describe("Transformer", () => {
     expect(resultMessage).toStrictEqual(jsonMessage);
   });
 });
+
+const mockPulsarMessage = (data: Buffer, eventTimestamp: number) =>
+  Object.defineProperties(new Pulsar.Message(), {
+    getData: { value: () => data, writable: true },
+    getEventTimestamp: { value: () => eventTimestamp, writable: true },
+    getProperties: { value: () => ({}), writable: true },
+    getMessageId: {
+      value: () => ({ toString: () => "1:2:3" }),
+      writable: true,
+    },
+  });
+
+const encodeApcData = (apcData: passengerCount.IData): Buffer =>
+  Buffer.from(
+    passengerCount.Data.encode(passengerCount.Data.create(apcData)).finish(),
+  );
+
+describe("Transformer drops messages it cannot transform", () => {
+  const logger = pino({ name: "test-logger", level: "silent" });
+  const transform = initializeTransformer(logger);
+
+  test("Data that is not Protobuf results in undefined", () => {
+    const message = mockPulsarMessage(Buffer.from([0xff, 0xff, 0xff]), 1);
+    expect(transform(message)).toBeUndefined();
+  });
+
+  test("Protobuf without the required payload results in undefined", () => {
+    // Only field 1 (SchemaVersion = 1); the generated encoder cannot omit the
+    // required payload.
+    const message = mockPulsarMessage(Buffer.from([0x08, 0x01]), 1);
+    expect(transform(message)).toBeUndefined();
+  });
+
+  test("Data without a topic results in undefined", () => {
+    const message = mockPulsarMessage(
+      encodeApcData({ SchemaVersion: 1, payload: { veh: 817 } }),
+      1,
+    );
+    expect(transform(message)).toBeUndefined();
+  });
+
+  test("Data with a topic of an unexpected format results in undefined", () => {
+    const message = mockPulsarMessage(
+      encodeApcData({
+        SchemaVersion: 1,
+        topic: "/hfp/v2/journey/ongoing/apc/bus",
+        payload: { veh: 817 },
+      }),
+      1,
+    );
+    expect(transform(message)).toBeUndefined();
+  });
+
+  test("Only the mode and the unique vehicle ID of the topic are kept and received_at is not forwarded", () => {
+    const message = mockPulsarMessage(
+      encodeApcData({
+        SchemaVersion: 1,
+        topic: "/hfp/v2/journey/ongoing/apc/tram/0040/00123/extra/levels",
+        payload: { veh: 123 },
+        receivedAt: 1707664053000,
+      }),
+      1707664053746,
+    );
+    expect(transform(message)).toStrictEqual({
+      data: Buffer.from(JSON.stringify({ APC: { veh: 123 } }), "utf8"),
+      eventTimestamp: 1707664053746,
+      properties: { "mqtt-topic": "tram/0040/00123" },
+    });
+  });
+
+  test("An empty payload results in an empty APC object", () => {
+    const message = mockPulsarMessage(
+      encodeApcData({
+        SchemaVersion: 1,
+        topic: "/hfp/v2/journey/ongoing/apc/bus/0018/00817",
+        payload: {},
+      }),
+      5,
+    );
+    const result = transform(message);
+    expect(result?.data.toString("utf8")).toBe('{"APC":{}}');
+  });
+});

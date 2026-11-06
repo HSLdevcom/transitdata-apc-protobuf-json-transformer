@@ -1,4 +1,7 @@
-FROM node:20-slim AS base
+# syntax=docker/dockerfile:1
+# check=error=true
+
+FROM hsldevcom/infodevops-docker-base-images:1.1.0-24-node AS base
 
 ARG DEBIAN_FRONTEND=noninteractive
 
@@ -21,14 +24,14 @@ RUN npm ci
 
 FROM installer AS tester
 COPY --chown=node:node . .
-CMD ["npm", "run", "check-and-build"]
+CMD ["npm", "run", "check-and-build:no-testcontainer-tests"]
 
 
 
 # An alternative to creating this layer is to trust npm prune --production.
 FROM base AS node_modules
 ENV NODE_ENV=production
-RUN npm ci --production
+RUN npm ci --omit=dev
 
 
 
@@ -42,18 +45,17 @@ RUN npm run build
 
 # The base image should be the same as the base image of base. Yet using ARG for
 # the base image irritates hadolint and might break Dependabot.
-FROM node:20-slim AS production
+FROM hsldevcom/infodevops-docker-base-images:1.1.0-24-node AS production
 
 ARG DEBIAN_FRONTEND=noninteractive
 ENV NODE_ENV=production
 
-# curl is used as the health check client.
+# curl is used as the health check client. ca-certificates and tini come from
+# the base image.
 RUN apt-get update \
   && apt-get upgrade -y \
   && apt-get -y --no-install-recommends install \
-  'ca-certificates' \
   'curl' \
-  'tini' \
   && rm -rf /var/lib/apt/lists/*
 
 USER node

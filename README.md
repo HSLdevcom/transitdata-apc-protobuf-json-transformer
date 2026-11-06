@@ -24,6 +24,9 @@ This project depends indirectly on [transitdata-common](https://github.com/HSLde
    npm run check-and-build
    ```
 
+   The integration test (`src/main.integration.test.ts`) starts Apache Pulsar with [Testcontainers](https://testcontainers.com/), so it needs a running Docker daemon.
+   Without Docker, run `npm run check-and-build:no-testcontainer-tests` instead.
+
 1. Load the environment variables:
 
    ```sh
